@@ -1,0 +1,93 @@
+export const influencers = [
+  {
+    id: 1,
+    name: "Komal Pandey",
+    handle: "komalpandeyofficial",
+    category: "Fashion",
+    instagram: "https://www.instagram.com/komalpandeyofficial/",
+    followers: "3.5M",
+    earnings: "₹25.0L",
+    image: "https://unavatar.io/instagram/komalpandeyofficial",
+    banner: "https://picsum.photos/seed/komalbanner/800/400",
+    bio: "Fashion influencer and content creator redefining style with creative outfits.",
+    products: [1, 5]
+  },
+  {
+    id: 2,
+    name: "Marques Brownlee",
+    handle: "mkbhd",
+    category: "Electronics",
+    instagram: "https://www.instagram.com/mkbhd/",
+    followers: "18M",
+    earnings: "$5.2M",
+    image: "https://unavatar.io/instagram/mkbhd",
+    banner: "https://picsum.photos/seed/mkbhdbanner/800/400",
+    bio: "Quality tech videos. Reviewing the latest in the electronics world.",
+    products: [2, 4]
+  },
+  {
+    id: 3,
+    name: "Huda Kattan",
+    handle: "hudabeauty",
+    category: "Beauty",
+    instagram: "https://www.instagram.com/hudabeauty/",
+    followers: "54M",
+    earnings: "$10M",
+    image: "https://unavatar.io/instagram/hudabeauty",
+    banner: "https://picsum.photos/seed/hudabanner/800/400",
+    bio: "Makeup artist, beauty blogger, and entrepreneur sharing top beauty advice.",
+    products: [3]
+  },
+  {
+    id: 4,
+    name: "Mr. Kate",
+    handle: "mrkate",
+    category: "Home Decor",
+    instagram: "https://www.instagram.com/mrkate/",
+    followers: "1.1M",
+    earnings: "$800K",
+    image: "https://unavatar.io/instagram/mrkate",
+    banner: "https://picsum.photos/seed/mrkatebanner/800/400",
+    bio: "DIY enthusiast and interior designer transforming spaces creatively.",
+    products: [6]
+  },
+  {
+    id: 5,
+    name: "Sahil Khan",
+    handle: "sahilkhan",
+    category: "Fitness",
+    instagram: "https://www.instagram.com/sahilkhan/",
+    followers: "11M",
+    earnings: "₹1.5Cr",
+    image: "https://unavatar.io/instagram/sahilkhan",
+    banner: "https://picsum.photos/seed/sahilbanner/800/400",
+    bio: "Fitness icon and entrepreneur motivating millions to stay healthy.",
+    products: [4]
+  },
+  {
+    id: 6,
+    name: "Ranveer Brar",
+    handle: "ranveer.brar",
+    category: "Grocery (Food)",
+    instagram: "https://www.instagram.com/ranveer.brar/",
+    followers: "3.5M",
+    earnings: "₹50.0L",
+    image: "https://unavatar.io/instagram/ranveer.brar",
+    banner: "https://picsum.photos/seed/ranveerbanner/800/400",
+    bio: "Celebrity chef sharing passion for food, recipes, and culinary stories.",
+    products: [5]
+  },
+  {
+    id: 7,
+    name: "Masoom Minawala",
+    handle: "masoomminawala",
+    category: "Jewellery",
+    instagram: "https://www.instagram.com/masoomminawala/",
+    followers: "1.4M",
+    earnings: "₹20.0L",
+    image: "https://unavatar.io/instagram/masoomminawala",
+    banner: "https://picsum.photos/seed/masoombanner/800/400",
+    bio: "Global Indian influencer focusing on fashion, lifestyle, and fine jewellery.",
+    products: [6]
+  }
+];
