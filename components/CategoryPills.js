@@ -14,10 +14,10 @@ const CategoryPills = ({ active, onSelect }) => {
           type="button"
           suppressHydrationWarning
           onClick={() => onSelect(cat)}
-          className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
+          className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border cursor-pointer active:scale-95 ${
             active === cat 
               ? 'border-primary shadow-lg scale-105 bg-primary text-white' 
-              : 'bg-white border-gray-200 text-neutral-gray hover:border-primary hover:text-primary'
+              : 'bg-white border-gray-200 text-neutral-black/70 hover:border-primary hover:text-primary active:bg-primary/5'
           }`}
         >
           {cat}

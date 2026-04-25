@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'motion/react';
 import { TrendingUp, Users, ShoppingBag, ShieldCheck } from 'lucide-react';
 
 const HeroSection = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const checkLogin = () => {
@@ -22,18 +21,6 @@ const HeroSection = () => {
     };
   }, []);
 
-  const handleJoinAction = () => {
-    if (isLoggedIn) {
-      router.push('/influencer/dashboard');
-    } else {
-      router.push('/login');
-    }
-  };
-
-  const handleBrowseAction = () => {
-    router.push('/products');
-  };
-
   return (
     <section className="relative pt-32 pb-20 px-4 overflow-hidden bg-neutral-light">
       {/* Background Shapes */}
@@ -42,9 +29,9 @@ const HeroSection = () => {
 
       <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.6 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white shadow-sm mb-8"
         >
           <span className="flex h-2 w-2 rounded-full animate-pulse bg-primary"></span>
@@ -52,44 +39,44 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.6, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
           className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-neutral-black font-display"
         >
           Where Influence Meets <span className="text-primary">Income.</span>
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.6, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="text-lg md:text-2xl max-w-2xl mb-12 leading-relaxed text-neutral-gray"
         >
           India&apos;s leading social commerce aggregator. Any creator can earn commission by promoting 500+ premium brands to their audience.
         </motion.p>
 
         <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
+           initial={{ opacity: 0, scale: 0.95 }}
            animate={{ opacity: 1, scale: 1 }}
-           transition={{ duration: 1.0, delay: 0.8 }}
+           transition={{ duration: 0.5, delay: 0.4 }}
            className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto"
          >
            <div className="w-full sm:w-auto">
-             <button 
-               onClick={handleJoinAction}
-               className="w-full px-12 py-5 rounded-3xl font-black text-xl shadow-2xl transition-all hover:-translate-y-1 active:scale-95 text-white bg-linear-to-br from-primary to-primary-dark cursor-pointer"
+             <Link 
+               href={isLoggedIn ? "/influencer/dashboard" : "/login"}
+               className="w-full px-12 py-5 rounded-3xl font-black text-xl shadow-2xl transition-all hover:-translate-y-1 active:scale-95 text-white bg-linear-to-br from-primary to-primary-dark cursor-pointer flex items-center justify-center whitespace-nowrap"
              >
                {isLoggedIn ? "Go to Dashboard" : "Join the Portal"}
-             </button>
+             </Link>
            </div>
            <div className="w-full sm:w-auto">
-             <button 
-               onClick={handleBrowseAction}
-               className="w-full px-12 py-5 rounded-3xl font-black text-xl bg-white border border-gray-200 shadow-xl transition-all hover:-translate-y-1 active:scale-95 text-neutral-black cursor-pointer"
+             <Link 
+               href="/products"
+               className="w-full px-12 py-5 rounded-3xl font-black text-xl bg-white border border-gray-200 shadow-xl transition-all hover:-translate-y-1 active:scale-95 text-neutral-black cursor-pointer flex items-center justify-center whitespace-nowrap"
              >
                Browse Marketplace
-             </button>
+             </Link>
            </div>
          </motion.div>
 

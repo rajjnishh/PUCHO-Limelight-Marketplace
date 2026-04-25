@@ -120,7 +120,7 @@ const HowItWorks = () => {
           {steps.map((step, idx) => (
             <div key={idx} className="relative z-10 flex flex-col items-center text-center group">
               <div 
-                className={`w-20 h-20 rounded-[28px] flex items-center justify-center mb-8 shadow-sm transition-all duration-1000 group-hover:-translate-y-2 group-hover:rotate-6 border border-gray-100 ${step.color}`} 
+                className={`w-20 h-20 rounded-[28px] flex items-center justify-center mb-8 shadow-sm transition-all duration-500 group-hover:-translate-y-2 group-hover:rotate-6 border border-gray-100 ${step.color}`} 
               >
                 {step.icon}
               </div>

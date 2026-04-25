@@ -47,6 +47,7 @@ const Navbar = () => {
               fill 
               className="object-contain object-left"
               referrerPolicy="no-referrer"
+              priority
             />
           </div>
         </Link>
@@ -64,7 +65,7 @@ const Navbar = () => {
               <Link 
                 key={item.href}
                 href={item.href} 
-                className={`relative px-5 py-2 rounded-xl text-[13px] font-bold transition-all duration-300 ${
+                className={`relative px-5 py-2 rounded-xl text-[13px] font-bold transition-all duration-200 ${
                   isActive 
                     ? 'text-primary bg-white shadow-xs' 
                     : 'text-neutral-black/70 hover:text-neutral-black hover:bg-white/60'
@@ -75,7 +76,7 @@ const Navbar = () => {
                   <motion.div 
                     layoutId="nav-glow"
                     className="absolute inset-0 bg-primary/5 rounded-xl -z-10"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                   />
                 )}
               </Link>
@@ -86,7 +87,7 @@ const Navbar = () => {
         {/* Icons */}
         <div className="flex items-center gap-4">
           {isLoggedIn && (
-            <Link href="/cart" className="relative p-2 hover:bg-black/5 rounded-full transition-colors">
+            <Link href="/cart" className="relative p-2 hover:bg-black/5 rounded-full transition-colors duration-200">
               <ShoppingCart size={22} className="text-neutral-black" />
               <span 
                 className="absolute top-0 right-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] text-white bg-primary shadow-sm"
@@ -98,7 +99,7 @@ const Navbar = () => {
           
           <Link 
             href={isLoggedIn ? "/profile" : "/login"} 
-            className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all hover:shadow-lg active:scale-95 bg-primary text-white text-sm"
+            className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg active:scale-95 bg-primary text-white text-sm"
           >
             <User size={16} />
             {isLoggedIn ? "Account" : "Influencer / Seller Login"}
@@ -108,7 +109,7 @@ const Navbar = () => {
             <button 
               type="button"
               onClick={handleLogout}
-              className="hidden md:block text-xs font-bold text-neutral-gray hover:text-primary transition-colors ml-2"
+              className="hidden md:block text-xs font-bold text-neutral-gray hover:text-primary transition-colors duration-200 ml-2"
             >
               Logout
             </button>
@@ -117,7 +118,7 @@ const Navbar = () => {
           {/* Mobile Menu Toggle */}
           <button 
             type="button"
-            className="md:hidden p-2"
+            className="md:hidden p-2 transition-transform active:scale-90"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={24} className="text-neutral-black" /> : <Menu size={24} className="text-neutral-black" />}
@@ -129,14 +130,15 @@ const Navbar = () => {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-white shadow-2xl border-t md:hidden flex flex-col p-6 gap-4"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="absolute top-full left-0 right-0 bg-white shadow-2xl border-t md:hidden flex flex-col p-6 gap-4 overflow-hidden"
           >
-            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black">Products</Link>
-            <Link href="/influencers" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black">Influencers</Link>
-            <Link href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black">How it Works</Link>
+            <Link href="/products" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black hover:text-primary transition-colors">Products</Link>
+            <Link href="/influencers" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black hover:text-primary transition-colors">Influencers</Link>
+            <Link href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black hover:text-primary transition-colors">How it Works</Link>
             
             {isLoggedIn && (
               <Link href="/cart" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold border-b pb-2 text-neutral-black flex justify-between items-center">
