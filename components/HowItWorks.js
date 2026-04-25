@@ -44,18 +44,18 @@ const HowItWorks = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative">
           {/* Connector Arrows (Desktop) - Precisely Centered Between Icons */}
-          <div className="hidden lg:block absolute top-0 left-0 w-full h-20 pointer-events-none z-0">
-            <svg width="100%" height="100%" viewBox="0 0 1000 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="hidden lg:block absolute top-[40px] left-0 w-full h-1 pointer-events-none z-0">
+            <svg width="100%" height="80px" viewBox="0 0 1000 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="overflow-visible -translate-y-1/2">
               {/* Arrow 1-2 (Midpoint 250) */}
               <motion.path 
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 viewport={{ once: true }}
-                d="M 165 40 Q 250 5 335 40" 
+                d="M 160 40 Q 250 -10 340 40" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
-                strokeDasharray="4 4" 
+                strokeWidth="2.5" 
+                strokeDasharray="6 6" 
                 fill="none" 
               />
               <motion.path 
@@ -63,9 +63,9 @@ const HowItWorks = () => {
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 1.0 }}
                 viewport={{ once: true }}
-                d="M 327 35 L 335 40 L 327 45" 
+                d="M 330 32 L 340 40 L 330 48" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
+                strokeWidth="2.5" 
                 fill="none" 
               />
               
@@ -75,10 +75,10 @@ const HowItWorks = () => {
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 viewport={{ once: true }}
-                d="M 415 40 Q 500 75 585 40" 
+                d="M 410 40 Q 500 90 590 40" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
-                strokeDasharray="4 4" 
+                strokeWidth="2.5" 
+                strokeDasharray="6 6" 
                 fill="none" 
               />
               <motion.path 
@@ -86,9 +86,9 @@ const HowItWorks = () => {
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 1.2 }}
                 viewport={{ once: true }}
-                d="M 577 35 L 585 40 L 577 45" 
+                d="M 580 32 L 590 40 L 580 48" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
+                strokeWidth="2.5" 
                 fill="none" 
               />
               
@@ -98,10 +98,10 @@ const HowItWorks = () => {
                 whileInView={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
                 viewport={{ once: true }}
-                d="M 665 40 Q 750 5 835 40" 
+                d="M 660 40 Q 750 -10 840 40" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
-                strokeDasharray="4 4" 
+                strokeWidth="2.5" 
+                strokeDasharray="6 6" 
                 fill="none" 
               />
               <motion.path 
@@ -109,9 +109,9 @@ const HowItWorks = () => {
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 1.4 }}
                 viewport={{ once: true }}
-                d="M 827 35 L 835 40 L 827 45" 
+                d="M 830 32 L 840 40 L 830 48" 
                 stroke="#FF2F6D" 
-                strokeWidth="3" 
+                strokeWidth="2.5" 
                 fill="none" 
               />
             </svg>

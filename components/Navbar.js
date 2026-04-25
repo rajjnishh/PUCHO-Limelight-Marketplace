@@ -35,74 +35,62 @@ const Navbar = () => {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-effect shadow-md py-2.5' : 'bg-transparent py-5'}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <div className="relative h-12 w-40 overflow-hidden flex items-center justify-center">
+        <Link href="/" className="flex items-center gap-0 group">
+          <div className="relative h-14 w-44">
             <Image 
               src="/logo.jpeg" 
-              alt="Puchol Limelight Logo" 
+              alt="pucho limelight" 
               fill 
               className="object-contain object-left"
-              referrerPolicy="no-referrer"
               priority
             />
           </div>
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-1.5 p-1.5 rounded-2xl border-2 border-pink-500/30 bg-white/40 tracking-tight shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+        {/* Center Menu - Pill Shape */}
+        <div className="hidden lg:flex items-center bg-white border border-[#EAEAEA] rounded-full py-1.5 px-1.5 shadow-sm">
           {[
             { name: 'Shop', href: '/products' },
             { name: 'Influencers', href: '/influencers' },
             { name: 'How it Works', href: '/how-it-works' },
-            { name: 'Sell with Us', href: '/seller/dashboard' }
+            { name: 'Sell with Us', href: '/register' }
           ].map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link 
                 key={item.href}
                 href={item.href} 
-                className={`relative px-5 py-2 rounded-xl text-[13px] font-bold transition-all duration-200 ${
+                className={`relative px-6 py-2 text-sm font-semibold transition-all duration-300 z-10 ${
                   isActive 
-                    ? 'text-primary bg-white shadow-xs' 
-                    : 'text-neutral-black/70 hover:text-neutral-black hover:bg-white/60'
+                    ? 'text-[#FF2E63]' 
+                    : 'text-[#111] hover:text-[#FF2E63]'
                 }`}
               >
-                {item.name}
                 {isActive && (
                   <motion.div 
-                    layoutId="nav-glow"
-                    className="absolute inset-0 bg-primary/5 rounded-xl -z-10"
-                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                    layoutId="nav-active-pill"
+                    className="absolute inset-0 bg-pink-50 rounded-full -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
+                {item.name}
               </Link>
             );
           })}
         </div>
 
-        {/* Icons */}
+        {/* Right CTA */}
         <div className="flex items-center gap-4">
-          {isLoggedIn && (
-            <Link href="/cart" className="relative p-2 hover:bg-black/5 rounded-full transition-colors duration-200">
-              <ShoppingCart size={22} className="text-neutral-black" />
-              <span 
-                className="absolute top-0 right-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] text-white bg-primary shadow-sm"
-              >
-                2
-              </span>
-            </Link>
-          )}
-          
           <Link 
             href={isLoggedIn ? "/profile" : "/login"} 
-            className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg active:scale-95 bg-primary text-white text-sm"
+            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/20 active:scale-95 bg-[#FF2E63] text-white text-sm"
           >
-            <User size={16} />
-            {isLoggedIn ? "Account" : "Influencer / Seller Login"}
+            <User size={18} />
+            Influencer / Seller Login
           </Link>
           
           {isLoggedIn && (
@@ -118,7 +106,7 @@ const Navbar = () => {
           {/* Mobile Menu Toggle */}
           <button 
             type="button"
-            className="md:hidden p-2 transition-transform active:scale-90"
+            className="lg:hidden p-2 transition-transform active:scale-90"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={24} className="text-neutral-black" /> : <Menu size={24} className="text-neutral-black" />}

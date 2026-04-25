@@ -41,6 +41,18 @@ export default function Home() {
 
   const trendingProducts = filteringProducts.slice(0, 8);
 
+  const avatars = [
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&h=150&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1504257407762-f7012cdb3f76?q=80&w=150&h=150&auto=format&fit=crop"
+  ];
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -60,6 +72,21 @@ export default function Home() {
               Trending Now
             </h2>
             <p className="text-neutral-gray">Hottest products promoted by top creators today.</p>
+            
+            {/* Social Proof */}
+            <div className="mt-6 flex items-center gap-2 p-1 bg-white rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-[#EAEAEA] w-fit">
+              <div className="flex -space-x-3 ml-1">
+                {avatars.slice(0, 8).map((url, i) => (
+                  <div key={i} className="w-[32px] h-[32px] rounded-full border-2 border-white overflow-hidden shadow-sm transition-transform hover:scale-110">
+                    <img src={url} alt="Creator" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <div className="bg-[#FF2E63] h-[32px] px-4 rounded-full text-[11px] font-bold text-white flex items-center gap-1.5 uppercase tracking-wider">
+                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                 10K+ Creators
+              </div>
+            </div>
           </div>
           <Link 
             href="/products" 
