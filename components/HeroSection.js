@@ -107,7 +107,7 @@ const HeroSection = () => {
 
           {/* Right Section (Cols 7-12) */}
           <div className="col-span-12 lg:col-span-6 relative flex justify-center lg:justify-end">
-            <div className="relative w-[440px] h-[440px]">
+            <div className="relative w-[380px] h-[380px]">
               
               {/* Scribble Decorations */}
               <div className="absolute -top-12 -left-12 opacity-40 pointer-events-none">
@@ -128,6 +128,8 @@ const HeroSection = () => {
                    fill
                    className="object-cover"
                    priority
+                   unoptimized
+                   referrerPolicy="no-referrer"
                 />
               </div>
 
