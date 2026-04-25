@@ -174,12 +174,12 @@ const HeroSection = () => {
                     "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=150&h=150&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=150&h=150&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=150&h=150&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1546868831-71bc00982d13?q=80&w=150&h=150&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=150&h=150&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150&h=150&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=150&h=150&auto=format&fit=crop"
                   ].map((url, i) => (
-                    <div key={i} className="aspect-square rounded-[10px] overflow-hidden">
-                      <img src={url} alt="Product" className="w-full h-full object-cover" />
+                    <div key={i} className="aspect-square rounded-[10px] overflow-hidden relative">
+                      <Image src={url} alt="Product" fill className="object-cover" referrerPolicy="no-referrer" />
                     </div>
                   ))}
                 </div>

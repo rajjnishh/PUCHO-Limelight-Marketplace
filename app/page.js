@@ -17,6 +17,7 @@ import { influencers } from '../data/influencers';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -77,8 +78,8 @@ export default function Home() {
             <div className="mt-6 flex items-center gap-2 p-1 bg-white rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-[#EAEAEA] w-fit">
               <div className="flex -space-x-3 ml-1">
                 {avatars.slice(0, 8).map((url, i) => (
-                  <div key={i} className="w-[32px] h-[32px] rounded-full border-2 border-white overflow-hidden shadow-sm transition-transform hover:scale-110">
-                    <img src={url} alt="Creator" className="w-full h-full object-cover" />
+                  <div key={i} className="w-[32px] h-[32px] rounded-full border-2 border-white overflow-hidden shadow-sm transition-transform hover:scale-110 relative">
+                    <Image src={url} alt="Creator" fill className="object-cover" referrerPolicy="no-referrer" />
                   </div>
                 ))}
               </div>
