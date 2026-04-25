@@ -122,14 +122,10 @@ const HeroSection = () => {
 
               {/* Main Image Container */}
               <div className="w-full h-full rounded-[32px] overflow-hidden relative shadow-2xl bg-gray-50 border-[12px] border-white/40 backdrop-blur-sm">
-                <Image 
+                <img 
                    src="/hero-image.png" 
                    alt="Young woman creator recording a video with camera on tripod"
-                   fill
-                   className="object-cover"
-                   priority
-                   unoptimized
-                   referrerPolicy="no-referrer"
+                   className="w-full h-full object-cover"
                 />
               </div>
 

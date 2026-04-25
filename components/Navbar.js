@@ -41,14 +41,10 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-0 group">
           <div className="relative h-8 w-24">
-            <Image 
+            <img 
               src="/logo.jpeg" 
               alt="pucho limelight" 
-              fill 
-              className="object-contain object-left"
-              priority
-              unoptimized
-              referrerPolicy="no-referrer"
+              className="h-full w-full object-contain object-left"
             />
           </div>
         </Link>
