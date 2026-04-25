@@ -138,11 +138,11 @@ const HeroSection = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="absolute top-10 -right-12 bg-white p-5 rounded-[24px] shadow-[0_15px_50px_rgba(0,0,0,0.12)] min-w-[200px] z-20"
+                className="absolute top-4 -right-16 bg-white p-3.5 rounded-[20px] shadow-[0_15px_50px_rgba(0,0,0,0.12)] min-w-[160px] z-20 border border-white/50"
               >
-                 <div className="text-[11px] font-bold text-[#999] mb-1">Total Earnings</div>
-                 <div className="text-[26px] font-bold text-[#111] leading-none mb-1">₹3,45,678 <span className="text-green-500 text-sm">↗</span></div>
-                 <div className="text-[11px] font-bold text-green-500">+32% <span className="text-[#999] font-normal">this month</span></div>
+                 <div className="text-[10px] font-bold text-[#999] mb-1">Total Earnings</div>
+                 <div className="text-[20px] font-bold text-[#111] leading-none mb-1">₹3,45,678 <span className="text-green-500 text-xs">↗</span></div>
+                 <div className="text-[10px] font-bold text-green-500">+32% <span className="text-[#999] font-normal text-[9px]">this month</span></div>
               </motion.div>
 
               {/* Commission Card (Middle Left) */}
