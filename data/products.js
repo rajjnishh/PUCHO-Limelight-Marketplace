@@ -7,7 +7,7 @@ export const products = [
     category: "Fashion",
     rating: 4.5,
     reviews: 120,
-    image: "/hero-image.png",
+    image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop",
     slug: "oversized-graphic-t-shirt",
     description: "Stylish and comfortable oversized graphic tee made from 100% premium cotton.",
     influencer: { name: "Komal Pandey", handle: "komalpandeyofficial", image: "https://picsum.photos/seed/komal/100/100" }
@@ -19,7 +19,7 @@ export const products = [
     category: "Fashion",
     rating: 4.4,
     reviews: 85,
-    image: "/hero-image.png",
+    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop",
     slug: "slim-fit-denim-jeans",
     description: "Classic slim-fit denim jeans with a modern stretch for all-day comfort.",
     influencer: { name: "Komal Pandey", handle: "komalpandeyofficial", image: "https://picsum.photos/seed/komal/100/100" }
@@ -31,7 +31,7 @@ export const products = [
     category: "Fashion",
     rating: 4.7,
     reviews: 210,
-    image: "/hero-image.png",
+    image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=800&auto=format&fit=crop",
     slug: "womens-floral-maxi-dress",
     description: "Beautiful floral print maxi dress, perfect for summer outings and brunches.",
     influencer: { name: "Komal Pandey", handle: "komalpandeyofficial", image: "https://picsum.photos/seed/komal/100/100" }
@@ -43,7 +43,7 @@ export const products = [
     category: "Fashion",
     rating: 4.6,
     reviews: 150,
-    image: "/hero-image.png",
+    image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=800&auto=format&fit=crop",
     slug: "casual-sneakers",
     description: "Versatile casual sneakers that pair perfectly with jeans or shorts.",
     influencer: { name: "Komal Pandey", handle: "komalpandeyofficial", image: "https://picsum.photos/seed/komal/100/100" }
