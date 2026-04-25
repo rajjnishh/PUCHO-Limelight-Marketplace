@@ -3,37 +3,39 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { ShoppingCart, Menu, X, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '@/context/AuthContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, signOut } = useAuth();
+  const pathname = usePathname();
+  const isLoggedIn = !!user;
 
   useEffect(() => {
-    const checkLogin = () => {
-      const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-      setIsLoggedIn(loggedIn);
-    };
-
-    checkLogin();
-    window.addEventListener('scroll', () => setIsScrolled(window.scrollY > 20));
-    window.addEventListener('storage', checkLogin);
-    
-    // Custom event for same-tab login
-    window.addEventListener('loginStateChange', checkLogin);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', () => setIsScrolled(window.scrollY > 20));
-      window.removeEventListener('storage', checkLogin);
-      window.removeEventListener('loginStateChange', checkLogin);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error.message);
+    }
+  };
+
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-1000 ${isScrolled ? 'glass-effect shadow-lg py-3' : 'bg-transparent py-5'}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-effect shadow-md py-2.5' : 'bg-transparent py-5'}`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
         {/* Logo */}
@@ -50,11 +52,35 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
-          <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors text-neutral-black">Shop</Link>
-          <Link href="/influencer/dashboard" className="text-sm font-medium hover:text-primary transition-colors text-neutral-black">Influencer Hub</Link>
-          <Link href="/seller/dashboard" className="text-sm font-medium hover:text-primary transition-colors text-neutral-black">Sell with Us</Link>
-          <Link href="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors text-neutral-black">How it Works</Link>
+        <div className="hidden md:flex items-center gap-1.5 p-1.5 rounded-2xl border-2 border-pink-500/30 bg-white/40 tracking-tight shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+          {[
+            { name: 'Shop', href: '/products' },
+            { name: 'Influencers', href: '/influencers' },
+            { name: 'How it Works', href: '/how-it-works' },
+            { name: 'Sell with Us', href: '/seller/dashboard' }
+          ].map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.href}
+                href={item.href} 
+                className={`relative px-5 py-2 rounded-xl text-[13px] font-bold transition-all duration-300 ${
+                  isActive 
+                    ? 'text-primary bg-white shadow-xs' 
+                    : 'text-neutral-black/70 hover:text-neutral-black hover:bg-white/60'
+                }`}
+              >
+                {item.name}
+                {isActive && (
+                  <motion.div 
+                    layoutId="nav-glow"
+                    className="absolute inset-0 bg-primary/5 rounded-xl -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Icons */}
@@ -80,11 +106,8 @@ const Navbar = () => {
           
           {isLoggedIn && (
             <button 
-              onClick={() => {
-                localStorage.removeItem('isLoggedIn');
-                window.dispatchEvent(new Event('loginStateChange'));
-                window.location.href = '/';
-              }}
+              type="button"
+              onClick={handleLogout}
               className="hidden md:block text-xs font-bold text-neutral-gray hover:text-primary transition-colors ml-2"
             >
               Logout
@@ -93,6 +116,7 @@ const Navbar = () => {
           
           {/* Mobile Menu Toggle */}
           <button 
+            type="button"
             className="md:hidden p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -132,11 +156,10 @@ const Navbar = () => {
 
             {isLoggedIn && (
               <button 
+                type="button"
                 onClick={() => {
-                  localStorage.removeItem('isLoggedIn');
-                  window.dispatchEvent(new Event('loginStateChange'));
+                  handleLogout();
                   setMobileMenuOpen(false);
-                  window.location.href = '/';
                 }}
                 className="text-neutral-gray font-bold p-2 hover:text-primary transition-colors"
               >

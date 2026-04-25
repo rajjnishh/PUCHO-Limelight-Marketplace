@@ -5,15 +5,63 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Mail, Lock, User, ArrowRight, TrendingUp, ShoppingBag } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
   const [accountType, setAccountType] = useState('influencer');
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    localStorage.setItem('isLoggedIn', 'true');
-    window.dispatchEvent(new Event('loginStateChange'));
-    window.location.href = '/';
+    setError('');
+    setLoading(true);
+
+    try {
+      // 1. Sign up user
+      const { user } = await signUp(email, password, {
+        name: fullName,
+        role: accountType,
+      });
+
+      if (user) {
+        // 2. Create entry in profiles table explicitly if no trigger is set
+        // In a real app, a DB trigger is better, but let's do it here for robustness
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            { 
+              id: user.id, 
+              name: fullName, 
+              email: email, 
+              role: accountType,
+              handle: fullName.toLowerCase().replace(/\s+/g, '.') + Math.floor(Math.random() * 1000)
+            }
+          ]);
+        
+        if (profileError) throw profileError;
+
+        // If influencer, also add to influencers table
+        if (accountType === 'influencer') {
+          await supabase.from('influencers').insert([{
+            profile_id: user.id,
+            name: fullName,
+            handle: fullName.toLowerCase().replace(/\s+/g, '.') + Math.floor(Math.random() * 1000),
+            bio: 'New Limelight Influencer'
+          }]);
+        }
+      }
+
+      window.location.href = '/';
+    } catch (err) {
+      setError(err.message || 'Failed to create account');
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,23 +105,30 @@ export default function RegisterPage() {
             <p className="text-neutral-gray font-medium">Join Limelight today and start your journey.</p>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-500 text-sm font-bold border border-red-100">
+              {error}
+            </div>
+          )}
+
           {/* Account Type Toggle */}
           <div className="flex p-1.5 bg-gray-100 rounded-3xl mb-10 border border-gray-100">
-             <button 
-               onClick={() => setAccountType('influencer')}
-               className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold transition-all ${accountType === 'influencer' ? 'bg-white shadow-xl text-primary' : 'text-neutral-black/40'}`}
-             >
-               <TrendingUp size={18} />
-               Influencer
-             </button>
-             <button 
-               type="button"
-               onClick={() => setAccountType('seller')}
-               className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold transition-all ${accountType === 'seller' ? 'bg-white shadow-xl text-primary' : 'text-neutral-black/40'}`}
-             >
-               <ShoppingBag size={18} />
-               Seller
-             </button>
+            <button 
+              type="button"
+              onClick={() => setAccountType('influencer')}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold transition-all ${accountType === 'influencer' ? 'bg-white shadow-xl text-primary' : 'text-neutral-black/40'}`}
+            >
+              <TrendingUp size={18} />
+              Influencer
+            </button>
+            <button 
+              type="button"
+              onClick={() => setAccountType('seller')}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold transition-all ${accountType === 'seller' ? 'bg-white shadow-xl text-primary' : 'text-neutral-black/40'}`}
+            >
+              <ShoppingBag size={18} />
+              Seller
+            </button>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-6 text-neutral-black">
@@ -83,6 +138,9 @@ export default function RegisterPage() {
                 <User className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
                 <input 
                   type="text" 
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
                   placeholder={accountType === 'influencer' ? "Your Name" : "Company/Seller Name"} 
                   className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-primary/20 text-lg transition-all shadow-sm"
                 />
@@ -95,6 +153,9 @@ export default function RegisterPage() {
                 <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
                 <input 
                   type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   placeholder="name@company.com" 
                   className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-primary/20 text-lg transition-all shadow-sm"
                 />
@@ -107,6 +168,9 @@ export default function RegisterPage() {
                 <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
                 <input 
                   type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                   placeholder="••••••••" 
                   className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-primary/20 text-lg transition-all shadow-sm"
                 />
@@ -119,9 +183,10 @@ export default function RegisterPage() {
 
             <button 
               type="submit"
-              className="w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-primary to-primary-dark"
+              disabled={loading}
+              className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-primary to-primary-dark ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
               <ArrowRight size={22} />
             </button>
           </form>

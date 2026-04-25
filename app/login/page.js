@@ -5,15 +5,29 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Mail, Lock, ArrowRight, Github, Chrome, TrendingUp, ShoppingBag } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [accountType, setAccountType] = useState('influencer');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.setItem('isLoggedIn', 'true');
-    window.dispatchEvent(new Event('loginStateChange'));
-    window.location.href = '/';
+    setError('');
+    setLoading(true);
+
+    try {
+      await signIn(email, password);
+      // AuthContext will handle state update, we just need to redirect
+      window.location.href = '/';
+    } catch (err) {
+      setError(err.message || 'Failed to sign in');
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,6 +84,12 @@ export default function LoginPage() {
             <p className="text-neutral-gray font-medium">Please select your account type and login.</p>
           </div>
 
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-500 text-sm font-bold border border-red-100">
+              {error}
+            </div>
+          )}
+
           {/* Account Type Toggle */}
           <div className="flex p-1.5 bg-gray-100 rounded-3xl mb-10 border border-gray-100">
              <button 
@@ -97,6 +117,9 @@ export default function LoginPage() {
                 <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
                 <input 
                   type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   placeholder="name@company.com" 
                   className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-primary/20 text-lg transition-all shadow-sm text-neutral-black"
                 />
@@ -112,6 +135,9 @@ export default function LoginPage() {
                 <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
                 <input 
                   type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                   placeholder="••••••••" 
                   className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-primary/20 text-lg transition-all shadow-sm text-neutral-black"
                 />
@@ -120,9 +146,10 @@ export default function LoginPage() {
 
             <button 
               type="submit"
-              className="w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-primary to-primary-dark"
+              disabled={loading}
+              className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-primary to-primary-dark ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
               <ArrowRight size={22} />
             </button>
           </form>

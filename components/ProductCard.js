@@ -76,6 +76,8 @@ const ProductCard = ({ product, showAffiliateAction = false }) => {
           
           {/* Wishlist Button */}
           <button 
+            type="button"
+            suppressHydrationWarning
             onClick={handleWishlistClick}
             className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all active:scale-95 z-10 ${
               isWishlisted 
@@ -113,6 +115,7 @@ const ProductCard = ({ product, showAffiliateAction = false }) => {
             <div className="flex gap-2">
               {showAffiliateAction ? (
                 <button 
+                  type="button"
                   onClick={handleCopyLink}
                   className="p-4 rounded-2xl transition-all shadow-lg active:scale-90 text-primary bg-primary/10 hover:bg-primary hover:text-white"
                   title="Copy Affiliate Link"

@@ -35,12 +35,11 @@ export default function Home() {
     };
   }, []);
 
-  const filteredProducts = activeCategory === "All" 
+  const filteringProducts = activeCategory === "All" 
     ? products 
     : products.filter(p => p.category === activeCategory);
 
-  const trendingProducts = filteredProducts;
-  const featuredInfluencers = influencers.slice(0, 3);
+  const trendingProducts = filteringProducts.slice(0, 8);
 
   return (
     <main className="min-h-screen">

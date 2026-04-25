@@ -61,9 +61,12 @@ const Footer = () => {
             <input 
               type="email" 
               placeholder="Your email" 
+              suppressHydrationWarning
               className="bg-white/10 border-white/10 border rounded-xl px-4 py-2.5 text-sm w-full outline-none focus:border-primary"
             />
             <button 
+              type="button"
+              suppressHydrationWarning
               className="px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-transform active:scale-95 bg-primary"
             >
               Join now

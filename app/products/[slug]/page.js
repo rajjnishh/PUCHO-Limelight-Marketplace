@@ -274,6 +274,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-6">
                 <div className="flex items-center bg-neutral-light rounded-2xl p-2 border border-gray-100">
                   <button 
+                    type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="w-12 h-12 flex items-center justify-center rounded-xl bg-white shadow-sm hover:text-primary transition-colors"
                   >
@@ -281,17 +282,19 @@ export default function ProductDetailPage() {
                   </button>
                   <span className="w-16 text-center font-bold text-xl">{quantity}</span>
                   <button 
+                    type="button"
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-12 h-12 flex items-center justify-center rounded-xl bg-white shadow-sm hover:text-primary transition-colors"
                   >
                     <Plus size={20} />
                   </button>
                 </div>
-                <button className="flex-grow group py-5 px-8 rounded-3xl font-bold flex items-center justify-center gap-4 shadow-2xl transition-all hover:-translate-y-1 active:scale-95 text-white bg-linear-to-br from-primary to-primary-dark">
+                <button type="button" className="flex-grow group py-5 px-8 rounded-3xl font-bold flex items-center justify-center gap-4 shadow-2xl transition-all hover:-translate-y-1 active:scale-95 text-white bg-linear-to-br from-primary to-primary-dark">
                   <ShoppingBag size={24} />
                   Add to Cart
                 </button>
                 <button 
+                  type="button"
                   onClick={handleWishlistClick}
                   className={`p-6 rounded-3xl border transition-colors ${
                     isWishlisted 
@@ -303,6 +306,7 @@ export default function ProductDetailPage() {
                   <Heart size={24} className="transition-all" fill={isWishlisted ? "currentColor" : "none"} />
                 </button>
                 <button 
+                  type="button"
                   onClick={handleShareClick}
                   className="p-6 rounded-3xl border border-gray-200 hover:bg-gray-50 text-neutral-black transition-colors"
                   title="Share this Product"
@@ -397,7 +401,7 @@ export default function ProductDetailPage() {
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-neutral-gray">Was this review helpful?</span>
-                  <button className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
+                  <button type="button" className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
                     Yes ({review.helpful})
                   </button>
                 </div>

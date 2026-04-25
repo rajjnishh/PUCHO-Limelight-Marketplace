@@ -57,7 +57,7 @@ const HeroSection = () => {
           transition={{ duration: 1.6, delay: 0.2 }}
           className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight text-neutral-black font-display"
         >
-          Turn Products into <span className="text-primary">Income.</span>
+          Where Influence Meets <span className="text-primary">Income.</span>
         </motion.h1>
 
         <motion.p

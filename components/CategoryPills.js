@@ -4,13 +4,15 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 
 const CategoryPills = ({ active, onSelect }) => {
-  const categories = ["All", "Fashion", "Electronics", "Beauty", "Home Decor", "Fitness", "Grocery", "Jewellery"];
+  const categories = ["All", "Fashion", "Electronics", "Beauty", "Home Decor", "Fitness", "Grocery (Food)", "Jewellery"];
 
   return (
     <div className="max-w-7xl mx-auto px-4 overflow-x-auto hide-scrollbar py-6 flex gap-3">
       {categories.map((cat) => (
         <button
           key={cat}
+          type="button"
+          suppressHydrationWarning
           onClick={() => onSelect(cat)}
           className={`px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all border ${
             active === cat 

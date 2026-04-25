@@ -66,7 +66,11 @@ export default function InfluencerProfilePage() {
             </div>
 
             <div className="flex items-center gap-3 pb-8">
-              <button className="px-8 py-4 rounded-2xl bg-white font-bold text-neutral-black shadow-xl transition-all hover:-translate-y-1 active:scale-95 flex items-center gap-2">
+              <button 
+                type="button"
+                suppressHydrationWarning
+                className="px-8 py-4 rounded-2xl bg-white font-bold text-neutral-black shadow-xl transition-all hover:-translate-y-1 active:scale-95 flex items-center gap-2"
+              >
                 <Share2 size={18} />
                 Share Profile
               </button>
@@ -95,30 +99,30 @@ export default function InfluencerProfilePage() {
                <div className="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100">
                  <h3 className="text-2xl font-bold mb-6 text-neutral-black font-display">About Me</h3>
                  <p className="text-neutral-gray leading-relaxed text-lg mb-8">
-                   {influencer.bio} Our exclusive collaboration brings you the best products curated specifically for our community.
+                   {influencer.bio} Our exclusive collaboration brings you the best products curated specifically for our community. Join me in discovering style that defines you.
                  </p>
                  <div className="flex flex-col gap-4">
-                   <h4 className="font-bold text-sm uppercase tracking-widest text-neutral-black/40 mb-2">Connect</h4>
-                    <a href="#" className="flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-gray-50 border border-gray-50">
-                      <div className="flex items-center gap-3">
-                        <Instagram className="text-pink-500" />
-                        <span className="font-bold text-neutral-black">Instagram</span>
-                      </div>
-                      <span className="opacity-40 tracking-tighter text-neutral-black font-mono">840K →</span>
-                    </a>
-                    <a href="#" className="flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-gray-50 border border-gray-50">
+                    <h4 className="font-bold text-sm uppercase tracking-widest text-neutral-black/40 mb-2">Connect</h4>
+                    {influencer.instagram && (
+                      <a 
+                        href={influencer.instagram} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-neutral-light border border-gray-100 text-neutral-black"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Instagram className="text-pink-500" />
+                          <span className="font-bold">Instagram</span>
+                        </div>
+                        <span className="opacity-40 tracking-tighter font-mono">View →</span>
+                      </a>
+                    )}
+                    <a href="#" className="flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-neutral-light border border-gray-100 text-neutral-black">
                       <div className="flex items-center gap-3">
                         <Youtube className="text-red-500" />
-                        <span className="font-bold text-neutral-black">YouTube</span>
+                        <span className="font-bold">YouTube</span>
                       </div>
-                      <span className="opacity-40 tracking-tighter text-neutral-black font-mono">1.2M →</span>
-                    </a>
-                    <a href="#" className="flex items-center justify-between p-4 rounded-2xl transition-colors hover:bg-gray-50 border border-gray-50">
-                      <div className="flex items-center gap-3">
-                        <Twitter className="text-blue-500" />
-                        <span className="font-bold text-neutral-black">Twitter</span>
-                      </div>
-                      <span className="opacity-40 tracking-tighter text-neutral-black font-mono">120K →</span>
+                      <span className="opacity-40 tracking-tighter font-mono">Subscribe →</span>
                     </a>
                  </div>
                </div>

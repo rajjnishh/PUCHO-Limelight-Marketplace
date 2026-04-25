@@ -7,7 +7,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/komalpandeyofficial/",
     followers: "3.5M",
     earnings: "₹25.0L",
-    image: "https://unavatar.io/instagram/komalpandeyofficial",
+    image: "https://picsum.photos/seed/komal/400/400",
     banner: "https://picsum.photos/seed/komalbanner/800/400",
     bio: "Fashion influencer and content creator redefining style with creative outfits.",
     products: [1, 5]
@@ -20,7 +20,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/mkbhd/",
     followers: "18M",
     earnings: "$5.2M",
-    image: "https://unavatar.io/instagram/mkbhd",
+    image: "https://picsum.photos/seed/mkbhd/400/400",
     banner: "https://picsum.photos/seed/mkbhdbanner/800/400",
     bio: "Quality tech videos. Reviewing the latest in the electronics world.",
     products: [2, 4]
@@ -33,7 +33,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/hudabeauty/",
     followers: "54M",
     earnings: "$10M",
-    image: "https://unavatar.io/instagram/hudabeauty",
+    image: "https://picsum.photos/seed/huda/400/400",
     banner: "https://picsum.photos/seed/hudabanner/800/400",
     bio: "Makeup artist, beauty blogger, and entrepreneur sharing top beauty advice.",
     products: [3]
@@ -46,7 +46,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/mrkate/",
     followers: "1.1M",
     earnings: "$800K",
-    image: "https://unavatar.io/instagram/mrkate",
+    image: "https://picsum.photos/seed/mrkate/400/400",
     banner: "https://picsum.photos/seed/mrkatebanner/800/400",
     bio: "DIY enthusiast and interior designer transforming spaces creatively.",
     products: [6]
@@ -59,7 +59,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/sahilkhan/",
     followers: "11M",
     earnings: "₹1.5Cr",
-    image: "https://unavatar.io/instagram/sahilkhan",
+    image: "https://picsum.photos/seed/sahil/400/400",
     banner: "https://picsum.photos/seed/sahilbanner/800/400",
     bio: "Fitness icon and entrepreneur motivating millions to stay healthy.",
     products: [4]
@@ -72,7 +72,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/ranveer.brar/",
     followers: "3.5M",
     earnings: "₹50.0L",
-    image: "https://unavatar.io/instagram/ranveer.brar",
+    image: "https://picsum.photos/seed/ranveer/400/400",
     banner: "https://picsum.photos/seed/ranveerbanner/800/400",
     bio: "Celebrity chef sharing passion for food, recipes, and culinary stories.",
     products: [5]
@@ -85,7 +85,7 @@ export const influencers = [
     instagram: "https://www.instagram.com/masoomminawala/",
     followers: "1.4M",
     earnings: "₹20.0L",
-    image: "https://unavatar.io/instagram/masoomminawala",
+    image: "https://picsum.photos/seed/masoom/400/400",
     banner: "https://picsum.photos/seed/masoombanner/800/400",
     bio: "Global Indian influencer focusing on fashion, lifestyle, and fine jewellery.",
     products: [6]
