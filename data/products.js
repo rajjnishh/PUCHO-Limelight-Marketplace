@@ -366,5 +366,57 @@ export const products = [
     slug: "pearl-bracelet",
     description: "Timeless pearl bracelet that complements any modern or traditional outfit.",
     influencer: { name: "Masoom Minawala", handle: "masoomminawala", image: "https://picsum.photos/seed/masoom/100/100" }
+  },
+  {
+    id: 29,
+    name: "Mechanical RGB Keyboard",
+    price: 3499,
+    category: "Tech",
+    rating: 4.8,
+    reviews: 245,
+    image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800&auto=format&fit=crop",
+    slug: "mechanical-rgb-keyboard",
+    description: "Premium tactile mechanical keyboard with customizable RGB lighting and hot-swappable switches.",
+    tags: ["Tech", "Gaming", "Keyboard"],
+    influencer: { name: "Shlok Srivastava", handle: "techburner", image: "https://picsum.photos/seed/shlok/100/100" }
+  },
+  {
+    id: 30,
+    name: "Wireless Ergonomic Mouse",
+    price: 1999,
+    category: "Tech",
+    rating: 4.7,
+    reviews: 180,
+    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=800&auto=format&fit=crop",
+    slug: "wireless-ergonomic-mouse",
+    description: "Ultra-responsive wireless mouse designed for long hours of productive work.",
+    tags: ["Tech", "Productivity", "Mouse"],
+    influencer: { name: "Shlok Srivastava", handle: "techburner", image: "https://picsum.photos/seed/shlok/100/100" }
+  },
+  {
+    id: 31,
+    name: "4K UltraWide Monitor",
+    price: 24999,
+    category: "Tech",
+    rating: 4.9,
+    reviews: 85,
+    image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800&auto=format&fit=crop",
+    slug: "4k-ultrawide-monitor",
+    description: "Experience stunning visuals with our 34-inch 4K UltraWide monitor, perfect for designers and creators.",
+    tags: ["Tech", "Display", "4K"],
+    influencer: { name: "Gaurav Chaudhary", handle: "technicalguruji", image: "https://picsum.photos/seed/guruji/100/100" }
+  },
+  {
+    id: 32,
+    name: "Graphics Drawing Tablet",
+    price: 7999,
+    category: "Tech",
+    rating: 4.6,
+    reviews: 120,
+    image: "https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=800&auto=format&fit=crop",
+    slug: "graphics-drawing-tablet",
+    description: "Professional-grade drawing tablet with pressure-sensitive pen for digital artists.",
+    tags: ["Tech", "Design", "Art"],
+    influencer: { name: "Gaurav Chaudhary", handle: "technicalguruji", image: "https://picsum.photos/seed/guruji/100/100" }
   }
 ];

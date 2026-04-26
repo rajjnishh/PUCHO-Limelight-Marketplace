@@ -12,10 +12,11 @@ import {
   DollarSign,
   Percent,
   ChevronRight,
-  ArrowLeft
+  ArrowLeft,
+  Trash2
 } from 'lucide-react';
 import Image from 'next/image';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function SellerProducts() {
   const [localProducts, setLocalProducts] = useState(products);
@@ -64,6 +65,14 @@ export default function SellerProducts() {
     });
     
     setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const handleDeleteProduct = (productId) => {
+    if (window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      setLocalProducts(localProducts.filter(p => p.id !== productId));
+      setSuccessMessage('Product deleted successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    }
   };
 
   const filteredProducts = localProducts.filter(p => 
@@ -130,37 +139,55 @@ export default function SellerProducts() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                      {filteredProducts.map((product) => (
-                        <tr key={product.id} className="group hover:bg-gray-50/50 transition-colors">
-                          <td className="px-8 py-6">
-                            <div className="flex items-center gap-4">
-                              <div className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
-                                <Image src={product.image} alt={product.name} fill className="object-cover" referrerPolicy="no-referrer" />
-                              </div>
-                              <div>
-                                <span className="block font-bold text-neutral-black mb-0.5">{product.name}</span>
-                                <span className="text-[10px] font-black tracking-wider text-primary uppercase bg-primary/5 px-2 py-0.5 rounded-lg">{product.category}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-6 font-bold text-neutral-gray text-sm">
-                            {product.sales ? 'Limited' : 'New Stock'}
-                          </td>
-                          <td className="px-6 py-6">
-                            <div className="flex items-center gap-1.5 text-accent font-black">
-                              <Percent size={14} />
-                              {product.commission || 15}%
-                            </div>
-                          </td>
-                          <td className="px-6 py-6 text-right font-black text-neutral-black">₹{product.price.toLocaleString('en-IN')}</td>
-                          <td className="px-8 py-6 text-right">
-                            <button className="p-2.5 hover:bg-white rounded-xl text-neutral-gray hover:text-neutral-black transition-all shadow-sm border border-transparent hover:border-gray-100">
-                              <MoreVertical size={16} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
+  <AnimatePresence mode="popLayout">
+    {filteredProducts.map((product) => (
+      <motion.tr 
+        key={product.id} 
+        layout
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 20, backgroundColor: 'rgba(239, 68, 68, 0.05)' }}
+        className="group hover:bg-gray-50/50 transition-colors"
+      >
+        <td className="px-8 py-6">
+          <div className="flex items-center gap-4">
+            <div className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50">
+              <Image src={product.image} alt={product.name} fill className="object-cover" referrerPolicy="no-referrer" />
+            </div>
+            <div>
+              <span className="block font-bold text-neutral-black mb-0.5">{product.name}</span>
+              <span className="text-[10px] font-black tracking-wider text-primary uppercase bg-primary/5 px-2 py-0.5 rounded-lg">{product.category}</span>
+            </div>
+          </div>
+        </td>
+        <td className="px-6 py-6 font-bold text-neutral-gray text-sm">
+          {product.sales ? 'Limited' : 'New Stock'}
+        </td>
+        <td className="px-6 py-6">
+          <div className="flex items-center gap-1.5 text-accent font-black">
+            <Percent size={14} />
+            {product.commission || 15}%
+          </div>
+        </td>
+        <td className="px-6 py-6 text-right font-black text-neutral-black">₹{product.price.toLocaleString('en-IN')}</td>
+        <td className="px-8 py-6 text-right">
+          <div className="flex items-center justify-end gap-2">
+            <button className="p-2.5 hover:bg-white rounded-xl text-neutral-gray hover:text-neutral-black transition-all shadow-sm border border-transparent hover:border-gray-100">
+              <MoreVertical size={16} />
+            </button>
+            <button 
+              onClick={() => handleDeleteProduct(product.id)}
+              className="p-2.5 hover:bg-red-50 rounded-xl text-red-400 hover:text-red-500 transition-all shadow-sm border border-transparent hover:border-red-100"
+              title="Delete Product"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </td>
+      </motion.tr>
+    ))}
+  </AnimatePresence>
+</tbody>
                   </table>
                 </div>
             </div>

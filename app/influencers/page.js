@@ -10,11 +10,14 @@ import { motion } from 'motion/react';
 
 export default function InfluencersPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   
-  const filteredInfluencers = influencers.filter(i => 
-    i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    i.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredInfluencers = influencers.filter(i => {
+    const matchesSearch = i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      i.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || i.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <main className="min-h-screen bg-neutral-light">
@@ -94,7 +97,15 @@ export default function InfluencersPage() {
           </h2>
           <div className="flex gap-3">
              {["All", "Fashion", "Beauty", "Tech", "Fitness"].map(cat => (
-               <button key={cat} className="px-5 py-2.5 rounded-2xl bg-white border border-gray-100 shadow-sm text-sm font-bold hover:border-primary transition-all text-neutral-black">
+               <button 
+                key={cat} 
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-5 py-2.5 rounded-2xl border text-sm font-bold transition-all ${
+                  selectedCategory === cat 
+                    ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
+                    : 'bg-white border-gray-100 text-neutral-black hover:border-primary shadow-sm'
+                }`}
+               >
                  {cat}
                </button>
              ))}

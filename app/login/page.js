@@ -10,6 +10,9 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [accountType, setAccountType] = useState('user');
+  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' or 'email'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState('phone'); // 'phone' or 'otp'
@@ -17,8 +20,23 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { signInWithPhone, signInWithGoogle, createUserProfile } = useAuth();
+  const { signInWithPhone, signInWithGoogle, signInWithEmail, createUserProfile } = useAuth();
   const router = useRouter();
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await signInWithEmail(email, password);
+      router.push('/');
+    } catch (err) {
+      setError(err.message || 'Failed to login with email.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -144,70 +162,145 @@ export default function LoginPage() {
           </div>
 
           <AnimatePresence mode="wait">
-            {step === 'phone' ? (
-              <motion.form 
-                key="phone"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                onSubmit={handleSendOtp} 
-                className="space-y-6"
-              >
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
+            {loginMethod === 'phone' ? (
+              step === 'phone' ? (
+                <motion.form 
+                  key="phone"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  onSubmit={handleSendOtp} 
+                  className="space-y-6"
+                >
+                  <div className="flex p-1 bg-gray-100 rounded-2xl mb-6">
+                    <button 
+                      type="button"
+                      onClick={() => setLoginMethod('phone')}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${loginMethod === 'phone' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                    >
+                      Phone
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setLoginMethod('email')}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${loginMethod === 'email' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                    >
+                      Email
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Phone Number</label>
+                    <div className="relative">
+                      <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
+                      <input 
+                        type="tel" 
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                        placeholder="98765 43210" 
+                        className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                      />
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  >
+                    {loading ? "Sending..." : "Send OTP"}
+                    <ArrowRight size={22} />
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.form 
+                  key="otp"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  onSubmit={handleVerifyOtp} 
+                  className="space-y-6"
+                >
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Verification Code</label>
+                      <button 
+                        type="button" 
+                        onClick={() => setStep('phone')}
+                        className="text-xs font-bold text-[#FF2F6D] hover:underline"
+                      >
+                        Change Number
+                      </button>
+                    </div>
                     <input 
-                      type="tel" 
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      type="text" 
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
                       required
-                      placeholder="98765 43210" 
-                      className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                      maxLength={6}
+                      placeholder="Enter 6-digit OTP" 
+                      className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-center text-2xl font-black tracking-[0.5em] transition-all shadow-sm text-neutral-black"
                     />
                   </div>
-                  <p className="text-[10px] text-gray-400 ml-1">We&apos;ll send an OTP to verify your number.</p>
-                </div>
 
-                <button 
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  {loading ? "Sending..." : "Send OTP"}
-                  <ArrowRight size={22} />
-                </button>
-              </motion.form>
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  >
+                    {loading ? "Verifying..." : "Verify & Continue"}
+                    <CheckCircle2 size={22} />
+                  </button>
+                </motion.form>
+              )
             ) : (
               <motion.form 
-                key="otp"
+                key="email"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                onSubmit={handleVerifyOtp} 
+                onSubmit={handleEmailLogin} 
                 className="space-y-6"
               >
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Verification Code</label>
-                    <button 
-                      type="button" 
-                      onClick={() => setStep('phone')}
-                      className="text-xs font-bold text-[#FF2F6D] hover:underline"
-                    >
-                      Change Number
-                    </button>
+                <div className="flex p-1 bg-gray-100 rounded-2xl mb-6">
+                  <button 
+                    type="button"
+                    onClick={() => setLoginMethod('phone')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${loginMethod === 'phone' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                  >
+                    Phone
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setLoginMethod('email')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${loginMethod === 'email' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                  >
+                    Email
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      placeholder="name@example.com" 
+                      className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                    />
                   </div>
-                  <input 
-                    type="text" 
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    required
-                    maxLength={6}
-                    placeholder="Enter 6-digit OTP" 
-                    className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-center text-2xl font-black tracking-[0.5em] transition-all shadow-sm text-neutral-black"
-                  />
-                  <p className="text-[10px] text-gray-400 text-center">Sent to {phoneNumber}</p>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Password</label>
+                    <input 
+                      type="password" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      placeholder="••••••••" 
+                      className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                    />
+                  </div>
                 </div>
 
                 <button 
@@ -215,8 +308,8 @@ export default function LoginPage() {
                   disabled={loading}
                   className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  {loading ? "Verifying..." : "Verify & Continue"}
-                  <CheckCircle2 size={22} />
+                  {loading ? "Logging in..." : "Login"}
+                  <ArrowRight size={22} />
                 </button>
               </motion.form>
             )}

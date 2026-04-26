@@ -39,8 +39,8 @@ const HeroSection = () => {
       {/* Subtle background glow */}
       <div className="absolute top-0 right-0 w-[45%] h-[45%] bg-[#FFF1F5] blur-[120px] rounded-full -z-10" />
 
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-[120px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Content (Cols 1-6) */}
           <div className="col-span-12 lg:col-span-6">

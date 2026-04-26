@@ -8,7 +8,10 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -79,8 +82,9 @@ export const AuthProvider = ({ children }) => {
       
       let userProfile = null;
       if (!docSnap.exists()) {
+        const name = user.displayName || (user.email ? user.email.split('@')[0] : 'New User');
         userProfile = await createUserProfile(user.uid, user.phoneNumber || user.email, role, {
-          displayName: user.displayName,
+          displayName: name,
           email: user.email,
           photoURL: user.photoURL
         });
@@ -91,6 +95,38 @@ export const AuthProvider = ({ children }) => {
       return { user, profile: userProfile };
     } catch (error) {
       console.error('Google sign in error:', error);
+      throw error;
+    }
+  };
+
+  const signUpWithEmail = async (email, password, displayName, role = 'user') => {
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+      
+      const name = displayName || email.split('@')[0];
+      
+      await updateProfile(user, { displayName: name });
+      
+      const userProfile = await createUserProfile(user.uid, null, role, {
+        displayName: name,
+        email: user.email,
+        photoURL: user.photoURL
+      });
+      
+      return { user, profile: userProfile };
+    } catch (error) {
+      console.error('Email sign up error:', error);
+      throw error;
+    }
+  };
+
+  const signInWithEmail = async (email, password) => {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return result;
+    } catch (error) {
+      console.error('Email sign in error:', error);
       throw error;
     }
   };
@@ -131,6 +167,8 @@ export const AuthProvider = ({ children }) => {
     profile,
     signInWithPhone,
     signInWithGoogle,
+    signUpWithEmail,
+    signInWithEmail,
     createUserProfile,
     signOut,
     loading

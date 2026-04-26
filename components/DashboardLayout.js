@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -22,6 +23,16 @@ import { motion, AnimatePresence } from 'motion/react';
 export default function DashboardLayout({ children, type = 'seller' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const { user, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const sellerLinks = [
     { href: '/seller/dashboard', label: 'Overview', icon: <LayoutDashboard size={20} /> },
@@ -37,7 +48,19 @@ export default function DashboardLayout({ children, type = 'seller' }) {
     { href: '/influencer/settings', label: 'Settings', icon: <Settings size={20} /> },
   ];
 
-  const links = type === 'seller' ? sellerLinks : influencerLinks;
+  const userLinks = [
+    { href: '/user/dashboard', label: 'My Orders', icon: <ShoppingBag size={20} /> },
+    { href: '/account/wishlist', label: 'Wishlist', icon: <DollarSign size={20} /> }, // Using DollarSign as placeholder icon if Heart isn't available in types
+    { href: '/user/settings', label: 'Profile Settings', icon: <Settings size={20} /> },
+  ];
+
+  const getLinks = () => {
+    if (type === 'seller') return sellerLinks;
+    if (type === 'influencer') return influencerLinks;
+    return userLinks;
+  };
+
+  const links = getLinks();
 
   return (
     <div className="min-h-screen bg-neutral-light flex overflow-hidden">
@@ -102,7 +125,10 @@ export default function DashboardLayout({ children, type = 'seller' }) {
           </nav>
 
           <div className="p-4 border-t border-gray-100">
-            <button className="flex items-center gap-4 px-5 py-4 w-full rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-colors">
+            <button 
+              onClick={handleSignOut}
+              className="flex items-center gap-4 px-5 py-4 w-full rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-colors"
+            >
               <LogOut size={20} />
               Sign Out
             </button>
@@ -146,11 +172,17 @@ export default function DashboardLayout({ children, type = 'seller' }) {
             
             <div className="flex items-center gap-3 sm:gap-4 pl-3 sm:pl-6 border-l border-gray-100">
               <div className="hidden sm:block text-right">
-                <div className="text-sm font-bold text-neutral-black">Rahul Sharma</div>
-                <div className="text-[10px] font-bold text-neutral-gray uppercase tracking-widest">{type}</div>
+                <div className="text-sm font-bold text-neutral-black">
+                  {profile?.displayName || user?.displayName || user?.email?.split('@')[0]}
+                </div>
+                <div className="text-[10px] font-bold text-neutral-gray uppercase tracking-widest">{profile?.role || type}</div>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center font-bold text-primary">
-                RS
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center font-bold text-primary overflow-hidden relative">
+                {user?.photoURL ? (
+                  <Image src={user.photoURL} alt="User" fill className="object-cover" />
+                ) : (
+                  (profile?.displayName || user?.displayName || 'U').charAt(0).toUpperCase()
+                )}
               </div>
             </div>
           </div>

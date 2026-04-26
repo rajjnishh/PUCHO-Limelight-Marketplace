@@ -7,8 +7,8 @@ export const influencers = [
     instagram: "https://www.instagram.com/komalpandeyofficial/",
     followers: "3.5M",
     earnings: "₹25.0L",
-    image: "https://picsum.photos/seed/komal/400/400",
-    banner: "https://picsum.photos/seed/komalbanner/800/400",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
+    banner: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop",
     bio: "Fashion influencer and content creator redefining style with creative outfits.",
     products: [1, 5]
   },
@@ -20,8 +20,8 @@ export const influencers = [
     instagram: "https://www.instagram.com/mkbhd/",
     followers: "18M",
     earnings: "$5.2M",
-    image: "https://picsum.photos/seed/mkbhd/400/400",
-    banner: "https://picsum.photos/seed/mkbhdbanner/800/400",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
+    banner: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop",
     bio: "Quality tech videos. Reviewing the latest in the electronics world.",
     products: [2, 4]
   },
@@ -89,5 +89,31 @@ export const influencers = [
     banner: "https://picsum.photos/seed/masoombanner/800/400",
     bio: "Global Indian influencer focusing on fashion, lifestyle, and fine jewellery.",
     products: [6]
+  },
+  {
+    id: 8,
+    name: "Shlok Srivastava",
+    handle: "techburner",
+    category: "Tech",
+    instagram: "https://www.instagram.com/shlokshrivastava/",
+    followers: "4.2M",
+    earnings: "₹1.2Cr",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop",
+    banner: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop",
+    bio: "Tech enthusiast making technology simple and fun for everyone.",
+    products: [29, 30]
+  },
+  {
+    id: 9,
+    name: "Gaurav Chaudhary",
+    handle: "technicalguruji",
+    category: "Tech",
+    instagram: "https://www.instagram.com/technicalguruji/",
+    followers: "2.4M",
+    earnings: "₹2.5Cr",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
+    banner: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop",
+    bio: "World's most subscribed tech YouTuber sharing the latest in technology.",
+    products: [31, 32]
   }
 ];

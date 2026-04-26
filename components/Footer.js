@@ -24,9 +24,9 @@ const Footer = () => {
             Connecting brands with top Indian influencers to create high-impact marketing and exclusive shopping experiences.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Instagram size={20} /></a>
+            <a href="https://www.instagram.com/pucho_limelight/" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Instagram size={20} /></a>
             <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Twitter size={20} /></a>
-            <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Facebook size={20} /></a>
+            <a href="https://www.facebook.com/pucholimelight" target="_blank" rel="noopener noreferrer" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Facebook size={20} /></a>
             <a href="#" className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"><Youtube size={20} /></a>
           </div>
         </div>

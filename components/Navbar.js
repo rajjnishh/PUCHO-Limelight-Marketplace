@@ -12,10 +12,17 @@ import { useWishlist } from '@/context/WishlistContext';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { wishlist } = useWishlist();
   const pathname = usePathname();
   const isLoggedIn = !!user;
+
+  const getDashboardLink = () => {
+    if (!profile?.role) return '/user/dashboard';
+    if (profile.role === 'seller') return '/seller/dashboard';
+    if (profile.role === 'influencer') return '/influencer/dashboard';
+    return '/user/dashboard';
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -104,11 +111,13 @@ const Navbar = () => {
             </Link>
           ) : (
             <div className="flex items-center gap-3">
-              <Link href="/profile" className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#EAEAEA] bg-white transition-all hover:bg-gray-50">
+              <Link href={getDashboardLink()} className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#EAEAEA] bg-white transition-all hover:bg-gray-50">
                 <div className="w-6 h-6 rounded-full bg-[#FF2E63]/10 flex items-center justify-center text-[#FF2E63]">
                   <User size={14} />
                 </div>
-                <span className="text-xs font-bold text-[#111] hidden sm:inline-block">Account</span>
+                <span className="text-xs font-bold text-[#111] hidden sm:inline-block">
+                  {profile?.displayName || user?.displayName || (user?.email ? user.email.split('@')[0] : 'Account')}
+                </span>
               </Link>
               <button 
                 type="button"
@@ -153,12 +162,12 @@ const Navbar = () => {
             )}
 
             <Link 
-              href={isLoggedIn ? "/profile" : "/login"} 
+              href={isLoggedIn ? getDashboardLink() : "/login"} 
               onClick={() => setMobileMenuOpen(false)}
               className="mt-4 flex items-center justify-center gap-2 p-4 rounded-xl text-white font-bold bg-primary transition-all active:scale-95"
             >
               <User size={20} />
-              {isLoggedIn ? "Account" : "Login / Register"}
+              {isLoggedIn ? (profile?.displayName || user?.displayName || (user?.email ? user.email.split('@')[0] : 'Account')) : "Login / Register"}
             </Link>
 
             {isLoggedIn && (

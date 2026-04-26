@@ -10,20 +10,38 @@ import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const [accountType, setAccountType] = useState('user');
+  const [registrationMethod, setRegistrationMethod] = useState('phone'); // 'phone' or 'email'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState('info'); // 'info' -> 'phone' -> 'otp'
+  const [step, setStep] = useState('info'); // 'info' -> 'details' -> 'otp'
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { signInWithPhone, signInWithGoogle, createUserProfile } = useAuth();
+  const { signInWithPhone, signInWithGoogle, signUpWithEmail, createUserProfile } = useAuth();
   const router = useRouter();
 
   const handleNextStep = (e) => {
     e.preventDefault();
-    setStep('phone');
+    setStep('details');
+  };
+
+  const handleEmailSignUp = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await signUpWithEmail(email, password, fullName, accountType);
+      router.push('/');
+    } catch (err) {
+      setError(err.message || 'Failed to sign up with email.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSendOtp = async (e) => {
@@ -164,42 +182,100 @@ export default function RegisterPage() {
               </motion.form>
             )}
 
-            {step === 'phone' && (
-              <motion.form 
-                key="phone"
+            {step === 'details' && (
+              <motion.div 
+                key="details"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                onSubmit={handleSendOtp}
-                className="space-y-6"
+                className="space-y-8"
               >
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Phone Number</label>
-                    <button type="button" onClick={() => setStep('info')} className="text-xs font-bold text-[#FF2F6D]">Back</button>
-                  </div>
-                  <div className="relative">
-                    <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
-                    <input 
-                      type="tel" 
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      required
-                      placeholder="98765 43210" 
-                      className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
-                    />
-                  </div>
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-bold text-neutral-black">Sign Up Details</h3>
+                  <button type="button" onClick={() => setStep('info')} className="text-xs font-bold text-[#FF2F6D]">Back</button>
                 </div>
 
-                <button 
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  {loading ? "Sending..." : "Send OTP"}
-                  <ArrowRight size={22} />
-                </button>
-              </motion.form>
+                <div className="flex p-1 bg-gray-100 rounded-2xl">
+                  <button 
+                    type="button"
+                    onClick={() => setRegistrationMethod('phone')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${registrationMethod === 'phone' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                  >
+                    Phone
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setRegistrationMethod('email')}
+                    className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${registrationMethod === 'email' ? 'bg-white text-[#FF2F6D] shadow-sm' : 'text-neutral-gray'}`}
+                  >
+                    Email
+                  </button>
+                </div>
+
+                {registrationMethod === 'phone' ? (
+                  <form onSubmit={handleSendOtp} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Phone Number</label>
+                      <div className="relative">
+                        <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-gray" size={20} />
+                        <input 
+                          type="tel" 
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          required
+                          placeholder="98765 43210" 
+                          className="w-full pl-16 pr-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                        />
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      disabled={loading}
+                      className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {loading ? "Sending..." : "Send OTP"}
+                      <ArrowRight size={22} />
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleEmailSignUp} className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Email Address</label>
+                        <input 
+                          type="email" 
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          placeholder="name@example.com" 
+                          className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-widest text-neutral-gray ml-1">Password</label>
+                        <input 
+                          type="password" 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          placeholder="••••••••" 
+                          className="w-full px-6 py-5 rounded-2xl bg-white border border-gray-100 outline-none focus:ring-2 ring-[#FF2F6D]/20 text-lg transition-all shadow-sm text-neutral-black"
+                        />
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      disabled={loading}
+                      className={`w-full py-5 rounded-3xl font-black text-lg transition-all hover:-translate-y-1 active:scale-95 shadow-2xl flex items-center justify-center gap-3 text-white bg-linear-to-br from-[#FF2F6D] to-[#D4145A] ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {loading ? "Creating Account..." : "Sign Up"}
+                      <ArrowRight size={22} />
+                    </button>
+                  </form>
+                )}
+              </motion.div>
             )}
 
             {step === 'otp' && (

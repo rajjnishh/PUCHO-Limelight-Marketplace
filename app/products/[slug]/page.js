@@ -7,7 +7,7 @@ import Footer from '../../../components/Footer';
 import ProductCard from '../../../components/ProductCard';
 import { products } from '../../../data/products';
 import Image from 'next/image';
-import { Star, ShieldCheck, Truck, RefreshCcw, ShoppingBag, Heart, Share2, Plus, Minus, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Copy, Link as LinkIcon } from 'lucide-react';
+import { Star, ShieldCheck, Truck, RefreshCcw, ShoppingBag, Heart, Share2, Plus, Minus, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Copy, Link as LinkIcon, Instagram, Twitter, Facebook } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { useWishlist } from '@/context/WishlistContext';
@@ -435,14 +435,44 @@ export default function ProductDetailPage() {
                 >
                   <Heart size={24} className="transition-all" fill={isInWishlist(product.id) ? "currentColor" : "none"} />
                 </button>
-                <button 
-                  type="button"
-                  onClick={handleShareClick}
-                  className="p-6 rounded-3xl border border-gray-200 hover:bg-gray-50 text-neutral-black transition-colors"
-                  title="Share this Product"
-                >
-                  <Share2 size={24} />
-                </button>
+                <div className="flex flex-wrap items-center gap-4">
+                  <button 
+                    type="button"
+                    onClick={handleShareClick}
+                    className="p-6 rounded-3xl border border-gray-200 hover:bg-gray-50 text-neutral-black transition-colors flex items-center gap-3"
+                    title="Share this Product"
+                  >
+                    <Share2 size={24} />
+                    <span className="text-xs font-bold uppercase tracking-widest hidden sm:inline">Share</span>
+                  </button>
+                  
+                  <div className="flex items-center gap-4 p-4 rounded-3xl bg-neutral-light border border-gray-100">
+                    <a 
+                      href="https://www.facebook.com/pucholimelight" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-neutral-gray hover:text-[#1877F2] transition-all transform hover:scale-125"
+                    >
+                      <Facebook size={20} />
+                    </a>
+                    <a 
+                      href="https://twitter.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-neutral-gray hover:text-[#1DA1F2] transition-all transform hover:scale-125"
+                    >
+                      <Twitter size={20} />
+                    </a>
+                    <a 
+                      href="https://instagram.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-neutral-gray hover:text-[#E4405F] transition-all transform hover:scale-125"
+                    >
+                      <Instagram size={20} />
+                    </a>
+                  </div>
+                </div>
               </div>
 
               {/* Affiliate Link Generator */}
