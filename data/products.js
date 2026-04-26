@@ -10,6 +10,15 @@ export const products = [
     image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop",
     slug: "oversized-graphic-t-shirt",
     description: "Stylish and comfortable oversized graphic tee made from 100% premium cotton.",
+    tags: ["Cotton", "Streetwear", "Oversized", "Unisex"],
+    variations: {
+      colors: [
+        { name: 'Pure White', value: '#FFFFFF', image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800&auto=format&fit=crop' },
+        { name: 'Onyx Black', value: '#1A1A1A', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop', priceModifier: 100 },
+        { name: 'Soft Peach', value: '#FFDAB9', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop' }
+      ],
+      sizes: ['S', 'M', 'L', 'XL', 'XXL']
+    },
     influencer: { name: "Komal Pandey", handle: "komalpandeyofficial", image: "https://picsum.photos/seed/komal/100/100" }
   },
   {
@@ -60,6 +69,14 @@ export const products = [
     image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=800&auto=format&fit=crop",
     slug: "wireless-bluetooth-earbuds",
     description: "Crystal clear sound with noise cancellation and up to 20 hours of battery life.",
+    tags: ["Wireless", "Audio", "Bluetooth", "Music"],
+    variations: {
+      colors: [
+        { name: 'Carbon Black', value: '#1C1C1C', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=800&auto=format&fit=crop' },
+        { name: 'Glacier White', value: '#F5F5F7', image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=800&auto=format&fit=crop', priceModifier: 500 },
+        { name: 'Rose Gold', value: '#E0BFB8', image: 'https://images.unsplash.com/photo-1605464315542-bda3e2f4e605?q=80&w=800&auto=format&fit=crop' }
+      ]
+    },
     influencer: { name: "Marques Brownlee", handle: "mkbhd", image: "https://picsum.photos/seed/mkbhd/100/100" }
   },
   {
@@ -210,6 +227,7 @@ export const products = [
     image: "https://images.unsplash.com/photo-1517438984742-1262db08379e?q=80&w=800&auto=format&fit=crop",
     slug: "resistance-bands-set",
     description: "Set of 5 resistance levels, ideal for home workouts and mobility.",
+    tags: ["Fitness", "Home Workout", "Strength", "Training"],
     influencer: { name: "Sahil Khan", handle: "sahilkhan", image: "https://picsum.photos/seed/sahil/100/100" }
   },
   {
@@ -260,6 +278,7 @@ export const products = [
     image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
     slug: "organic-basmati-rice",
     description: "Long-grain aromatic basmati rice, grown organically for pure taste.",
+    tags: ["Organic", "Healthy", "Kitchen", "Pantry"],
     influencer: { name: "Ranveer Brar", handle: "ranveer.brar", image: "https://picsum.photos/seed/ranveer/100/100" }
   },
   {

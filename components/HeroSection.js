@@ -176,8 +176,8 @@ const HeroSection = () => {
                     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=150&h=150&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=150&h=150&auto=format&fit=crop"
                   ].map((url, i) => (
-                    <div key={i} className="aspect-square rounded-[10px] overflow-hidden relative">
-                      <Image src={url} alt="Product" fill className="object-cover" referrerPolicy="no-referrer" />
+                    <div key={i} className="aspect-square rounded-[10px] overflow-hidden relative bg-gray-50">
+                      <img src={url} alt="Product" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                   ))}
                 </div>

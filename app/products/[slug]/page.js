@@ -7,9 +7,10 @@ import Footer from '../../../components/Footer';
 import ProductCard from '../../../components/ProductCard';
 import { products } from '../../../data/products';
 import Image from 'next/image';
-import { Star, ShieldCheck, Truck, RefreshCcw, ShoppingBag, Heart, Share2, Plus, Minus, CheckCircle2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Star, ShieldCheck, Truck, RefreshCcw, ShoppingBag, Heart, Share2, Plus, Minus, CheckCircle2, ChevronLeft, ChevronRight, ArrowRight, Copy, Link as LinkIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
+import { useWishlist } from '@/context/WishlistContext';
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -17,11 +18,53 @@ export default function ProductDetailPage() {
   const ref = searchParams.get('ref');
   
   const product = products.find(p => p.slug === slug) || products[0];
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [sortOrder, setSortOrder] = useState('helpful');
   const [mockReviews, setMockReviews] = useState([]);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(product.variations?.colors?.[0] || null);
+  const [selectedSize, setSelectedSize] = useState(product.variations?.sizes?.[0] || null);
+  const [affiliateHandle, setAffiliateHandle] = useState('');
+  const [generatedLink, setGeneratedLink] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const generateAffiliateLink = () => {
+    if (!affiliateHandle.trim()) {
+      alert('Please enter your influencer handle first.');
+      return;
+    }
+    const baseUrl = window.location.origin + window.location.pathname;
+    const link = `${baseUrl}?ref=${affiliateHandle.trim().replace('@', '')}`;
+    setGeneratedLink(link);
+    setCopied(false);
+  };
+
+  const copyLink = () => {
+    if (generatedLink) {
+      navigator.clipboard.writeText(generatedLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const productImages = [
+    selectedColor?.image || product.image,
+    `https://picsum.photos/seed/${product.slug}-1/800/800`,
+    `https://picsum.photos/seed/${product.slug}-2/800/800`,
+    `https://picsum.photos/seed/${product.slug}-3/800/800`,
+    `https://picsum.photos/seed/${product.slug}-4/800/800`,
+  ];
+
+  const currentPrice = product.price + (selectedColor?.priceModifier || 0);
+
+  useEffect(() => {
+    if (selectedColor?.image) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveImageIndex(0);
+    }
+  }, [selectedColor]);
 
   useEffect(() => {
     // Generate mock reviews for the product
@@ -76,56 +119,33 @@ export default function ProductDetailPage() {
   });
 
   useEffect(() => {
-    // Tracking Wishlist Status
-    const checkWishlist = () => {
-      const list = JSON.parse(localStorage.getItem('wishlist') || '[]');
-      setIsWishlisted(list.includes(product.slug));
-    };
-    checkWishlist();
-    window.addEventListener('wishlistChange', checkWishlist);
-    window.addEventListener('storage', checkWishlist);
-    
-    return () => {
-      window.removeEventListener('wishlistChange', checkWishlist);
-      window.removeEventListener('storage', checkWishlist);
-    };
-  }, [product.slug]);
-
-  useEffect(() => {
     // Tracking Recently Viewed Products
-    const storedSlugs = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
-    const updatedSlugs = storedSlugs.filter(s => s !== product.slug);
-    
-    updatedSlugs.unshift(product.slug);
-    // Limit history to 6 products
-    const finalSlugs = updatedSlugs.slice(0, 6);
-    
-    localStorage.setItem('recentlyViewed', JSON.stringify(finalSlugs));
+    try {
+      const storedData = localStorage.getItem('recentlyViewed');
+      const storedSlugs = storedData ? JSON.parse(storedData) : [];
+      if (!Array.isArray(storedSlugs)) throw new Error("Invalid data");
 
-    // Map slugs to product objects for display (excluding current product)
-    const viewedProducts = finalSlugs
-      .filter(s => s !== product.slug)
-      .map(s => products.find(p => p.slug === s))
-      .filter(Boolean);
+      // Keep up to 20 products in history
+      const updatedSlugs = [product.slug, ...storedSlugs.filter(s => s !== product.slug)].slice(0, 20);
+      
+      localStorage.setItem('recentlyViewed', JSON.stringify(updatedSlugs));
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setRecentlyViewed(viewedProducts);
+      // Map slugs to product objects for display (excluding current product)
+      const viewedProducts = updatedSlugs
+        .filter(s => s !== product.slug)
+        .map(s => products.find(p => p.slug === s))
+        .filter(Boolean)
+        .slice(0, 10);
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRecentlyViewed(viewedProducts);
+    } catch (error) {
+      console.error('Error tracking recently viewed:', error);
+      localStorage.setItem('recentlyViewed', JSON.stringify([product.slug]));
+    }
   }, [product.slug]);
 
   const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 4);
-
-  const handleWishlistClick = () => {
-    let list = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    if (list.includes(product.slug)) {
-      list = list.filter(slug => slug !== product.slug);
-      setIsWishlisted(false);
-    } else {
-      list.push(product.slug);
-      setIsWishlisted(true);
-    }
-    localStorage.setItem('wishlist', JSON.stringify(list));
-    window.dispatchEvent(new Event('wishlistChange'));
-  };
 
   const handleShareClick = async () => {
     const shareData = {
@@ -177,31 +197,74 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Left: Images */}
           <div className="space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="relative aspect-square rounded-[40px] overflow-hidden bg-gray-50 border border-gray-100 shadow-2xl"
-            >
-              <Image 
-                src={product.image} 
-                alt={product.name}
-                fill
-                className="object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
+            <div className="relative group">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="relative aspect-square rounded-[40px] overflow-hidden bg-gray-50 border border-gray-100 shadow-2xl"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeImageIndex}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="relative w-full h-full"
+                  >
+                    <Image 
+                      src={productImages[activeImageIndex]} 
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Carousel Controls */}
+                <button
+                  onClick={() => setActiveImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 flex items-center justify-center text-neutral-black shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button
+                  onClick={() => setActiveImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border border-gray-100 flex items-center justify-center text-neutral-black shadow-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
+                >
+                  <ChevronRight size={24} />
+                </button>
+
+                {/* Indicators */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+                  {productImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-all ${idx === activeImageIndex ? 'w-8 bg-primary' : 'bg-white/50 backdrop-blur-sm'}`}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            </div>
             
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary cursor-pointer bg-gray-50 relative">
+            <div className="grid grid-cols-5 gap-4">
+              {productImages.map((img, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setActiveImageIndex(i)}
+                  className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all bg-gray-50 relative ${activeImageIndex === i ? 'border-primary' : 'border-transparent hover:border-gray-300'}`}
+                >
                   <Image 
-                    src={`https://picsum.photos/seed/${product.slug}-${i}/200/200`} 
-                    alt="gallery"
+                    src={img} 
+                    alt={`gallery-${i}`}
                     fill
                     className="object-cover"
                     referrerPolicy="no-referrer"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -235,7 +298,7 @@ export default function ProductDetailPage() {
             <div className="mb-10 p-6 rounded-3xl bg-neutral-light border border-gray-100 flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-gray mb-1 block">Best Price</span>
-                <span className="text-4xl font-black text-neutral-black">₹{product.price.toLocaleString('en-IN')}</span>
+                <span className="text-4xl font-black text-neutral-black">₹{currentPrice.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex flex-col items-end">
                 <span className="text-xs font-bold text-accent-orange bg-accent-orange/10 px-3 py-1 rounded-lg mb-1">In Stock</span>
@@ -243,8 +306,60 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
+            {/* Variations */}
+            {product.variations && (
+              <div className="space-y-8 mb-10">
+                {product.variations.colors && (
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-xs font-bold uppercase tracking-widest text-neutral-gray">Color</span>
+                      <span className="text-xs font-bold text-neutral-black">{selectedColor?.name}</span>
+                    </div>
+                    <div className="flex gap-4">
+                      {product.variations.colors.map((color) => (
+                        <button
+                          key={color.name}
+                          onClick={() => setSelectedColor(color)}
+                          className={`w-12 h-12 rounded-2xl border-4 transition-all flex items-center justify-center ${selectedColor?.name === color.name ? 'border-primary ring-4 ring-primary/10' : 'border-gray-100 hover:border-gray-200'}`}
+                          title={color.name}
+                        >
+                          <div 
+                            className="w-full h-full rounded-xl border border-black/5" 
+                            style={{ backgroundColor: color.value }}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {product.variations.sizes && (
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-xs font-bold uppercase tracking-widest text-neutral-gray">Size</span>
+                      <span className="text-xs font-bold text-neutral-black">Guide</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {product.variations.sizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`min-w-[64px] h-14 rounded-2xl border-2 font-bold transition-all ${selectedSize === size ? 'border-primary bg-primary/5 text-primary' : 'border-gray-100 bg-white text-neutral-black hover:border-gray-200'}`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Influencer Card - Miniature */}
-            <div className="mb-10 p-6 rounded-3xl border-2 border-primary/10 flex items-center justify-between group hover:border-primary/30 transition-all cursor-pointer">
+            <Link 
+              href={`/influencers/${product.influencer.handle}`}
+              className="mb-10 p-6 rounded-3xl border-2 border-primary/10 flex items-center justify-between group hover:border-primary/30 transition-all cursor-pointer"
+            >
               <div className="flex items-center gap-4">
                 <div className="relative w-14 h-14 rounded-2xl overflow-hidden shadow-lg transform group-hover:scale-105 transition-transform">
                   <Image 
@@ -257,17 +372,32 @@ export default function ProductDetailPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-primary">Recommended by</p>
-                  <h4 className="font-bold text-lg text-neutral-black font-display">{product.influencer.name}</h4>
+                  <h4 className="font-bold text-lg text-neutral-black font-display group-hover:text-primary transition-colors">{product.influencer.name}</h4>
                 </div>
               </div>
-              <Link href={`/influencers/${product.influencer.handle}`} className="p-3 bg-white shadow-sm rounded-xl text-primary hover:bg-primary hover:text-white transition-colors">
-                <Share2 size={20} />
-              </Link>
-            </div>
+              <div className="p-3 bg-white shadow-sm rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                <ArrowRight size={20} />
+              </div>
+            </Link>
 
-            <p className="text-neutral-gray leading-relaxed mb-10 text-lg">
+            <p className="text-neutral-gray leading-relaxed mb-6 text-lg">
               {product.description}
             </p>
+
+            {/* Tags Section */}
+            {product.tags && (
+              <div className="flex flex-wrap gap-2 mb-10">
+                {product.tags.map(tag => (
+                  <Link 
+                    key={tag} 
+                    href={`/products?tag=${tag}`}
+                    className="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-gray-50 text-neutral-gray border border-gray-100 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Actions */}
             <div className="space-y-6">
@@ -295,15 +425,15 @@ export default function ProductDetailPage() {
                 </button>
                 <button 
                   type="button"
-                  onClick={handleWishlistClick}
-                  className={`p-6 rounded-3xl border transition-colors ${
-                    isWishlisted 
-                      ? 'border-primary bg-primary/5 text-primary' 
+                  onClick={() => toggleWishlist(product)}
+                  className={`p-6 rounded-3xl border transition-all active:scale-95 ${
+                    isInWishlist(product.id) 
+                      ? 'border-primary bg-primary/5 text-primary shadow-lg shadow-primary/10' 
                       : 'border-gray-200 hover:bg-gray-50 text-neutral-black'
                   }`}
-                  title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                  title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                 >
-                  <Heart size={24} className="transition-all" fill={isWishlisted ? "currentColor" : "none"} />
+                  <Heart size={24} className="transition-all" fill={isInWishlist(product.id) ? "currentColor" : "none"} />
                 </button>
                 <button 
                   type="button"
@@ -314,6 +444,71 @@ export default function ProductDetailPage() {
                   <Share2 size={24} />
                 </button>
               </div>
+
+              {/* Affiliate Link Generator */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-8 rounded-[32px] bg-neutral-black text-white overflow-hidden relative"
+              >
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-white/10 rounded-xl">
+                      <LinkIcon size={20} className="text-primary" />
+                    </div>
+                    <h4 className="text-xl font-bold font-display">Affiliate Link Generator</h4>
+                  </div>
+                  
+                  <p className="text-white/60 text-xs mb-6 leading-relaxed">
+                    Influencers: Generate your unique link and earn <span className="text-primary font-bold">{product.commission || 15}% commission</span> on every sale.
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-grow">
+                      <input 
+                        type="text" 
+                        value={affiliateHandle}
+                        onChange={(e) => setAffiliateHandle(e.target.value)}
+                        placeholder="@yourhandle"
+                        className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm font-bold outline-none focus:border-primary transition-all placeholder:text-white/20"
+                      />
+                    </div>
+                    <button 
+                      onClick={generateAffiliateLink}
+                      className="px-6 py-4 bg-primary text-white rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 hover:-translate-y-1 transition-all active:scale-95"
+                    >
+                      Generate Link
+                    </button>
+                  </div>
+
+                  {generatedLink && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-6 pt-6 border-t border-white/10"
+                    >
+                      <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <input 
+                          type="text" 
+                          readOnly 
+                          value={generatedLink}
+                          className="flex-grow bg-transparent text-[10px] font-mono text-white/40 outline-none"
+                        />
+                        <button 
+                          onClick={copyLink}
+                          className="flex items-center gap-2 p-2 bg-white text-neutral-black rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                        >
+                          {copied ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                          {copied ? 'Copied' : 'Copy'}
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Decorative background circle */}
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+              </motion.div>
 
               {/* Guarantees */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 border-t">
@@ -427,17 +622,45 @@ export default function ProductDetailPage() {
 
       {/* Recently Viewed Products */}
       {recentlyViewed.length > 0 && (
-        <section className="py-24 px-4 bg-white border-t border-gray-100">
+        <section className="py-24 px-4 bg-white border-t border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-neutral-black font-display">
-              Recently Viewed
-            </h2>
-            <div className="flex gap-8 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
-              {recentlyViewed.map(p => (
-                <div key={p.id} className="min-w-[85vw] sm:min-w-[calc(50%-16px)] lg:min-w-[calc(25%-24px)] snap-start">
-                  <ProductCard product={p} />
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-3xl font-bold text-neutral-black font-display">
+                Recently Viewed
+              </h2>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('recentlyViewed');
+                    setRecentlyViewed([]);
+                  }}
+                  className="text-[10px] font-black uppercase tracking-widest text-neutral-gray hover:text-red-500 transition-colors"
+                >
+                  Clear History
+                </button>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="flex gap-8 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar">
+                {recentlyViewed.map((p, idx) => (
+                  <motion.div 
+                    key={p.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    viewport={{ once: true }}
+                    className="min-w-[85vw] sm:min-w-[300px] lg:min-w-[280px] snap-start"
+                  >
+                    <ProductCard product={p} />
+                  </motion.div>
+                ))}
+                {/* Spacer for overflow */}
+                <div className="min-w-[1px] h-full" />
+              </div>
+              
+              {/* Optional: Fade effect for scroll */}
+              <div className="absolute top-0 right-0 bottom-8 w-20 bg-linear-to-r from-transparent to-white pointer-events-none hidden lg:block" />
             </div>
           </div>
         </section>

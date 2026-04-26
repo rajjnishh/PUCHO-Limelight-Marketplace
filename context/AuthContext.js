@@ -1,7 +1,16 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { auth, db } from '@/lib/firebase';
+import { 
+  onAuthStateChanged, 
+  signOut as firebaseSignOut,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const AuthContext = createContext({});
 
@@ -12,96 +21,117 @@ export const AuthProvider = ({ children }) => {
 
   const fetchProfile = async (userId) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (error) throw error;
-      setProfile(data);
+      const docRef = doc(db, 'users', userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setProfile(docSnap.data());
+      }
     } catch (error) {
       console.error('Error fetching profile:', error.message);
     }
   };
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
-      console.warn('Supabase is not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment variables.');
-      const timer = setTimeout(() => setLoading(false), 0);
-      return () => clearTimeout(timer);
-    }
-
-    // Check active sessions and sets the user
-    const fetchSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
-      } catch (error) {
-        console.error('Session fetch failed:', error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSession();
-
-    // Listen for changes on auth state (sign in, sign out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+      if (user) {
+        await fetchProfile(user.uid);
       } else {
         setProfile(null);
       }
       setLoading(false);
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
-  const signUp = async (email, password, metadata) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata, // metadata can include name, handle, role
-      },
-    });
-
-    if (error) throw error;
-
-    // Supabase Auth doesn't automatically create the profile table entry usually without a trigger,
-    // but we can manually insert it here if we want to be explicit, 
-    // or rely on a SQL trigger in the DB.
-    // Let's assume we handle it in the UI logic for now or tell the user to use a trigger.
-    return data;
+  const setupRecaptcha = (containerId) => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+        'size': 'invisible',
+        'callback': (response) => {
+          // reCAPTCHA solved
+        }
+      });
+    }
   };
 
-  const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-    return data;
+  const signInWithPhone = async (phoneNumber, containerId) => {
+    setupRecaptcha(containerId);
+    const appVerifier = window.recaptchaVerifier;
+    try {
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+      return confirmationResult;
+    } catch (error) {
+      console.error('Phone sign in error:', error);
+      throw error;
+    }
+  };
+
+  const signInWithGoogle = async (role = 'user') => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      const docRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      let userProfile = null;
+      if (!docSnap.exists()) {
+        userProfile = await createUserProfile(user.uid, user.phoneNumber || user.email, role, {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL
+        });
+      } else {
+        userProfile = docSnap.data();
+        setProfile(userProfile);
+      }
+      return { user, profile: userProfile };
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      throw error;
+    }
+  };
+
+  const createUserProfile = async (uid, phoneNumber, role, additionalData = {}) => {
+    try {
+      const docRef = doc(db, 'users', uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        const userData = {
+          uid,
+          phoneNumber,
+          role,
+          createdAt: serverTimestamp(),
+          ...additionalData
+        };
+        await setDoc(docRef, userData);
+        setProfile(userData);
+        return userData;
+      } else {
+        const existingData = docSnap.data();
+        setProfile(existingData);
+        return existingData;
+      }
+    } catch (error) {
+      console.error('Error in profile operation:', error);
+      throw error;
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    await firebaseSignOut(auth);
   };
 
   const value = {
     user,
     profile,
-    signUp,
-    signIn,
+    signInWithPhone,
+    signInWithGoogle,
+    createUserProfile,
     signOut,
     loading
   };

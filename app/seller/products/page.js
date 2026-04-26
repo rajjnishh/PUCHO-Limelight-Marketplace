@@ -15,18 +15,73 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import Image from 'next/image';
+import { motion } from 'motion/react';
 
 export default function SellerProducts() {
+  const [localProducts, setLocalProducts] = useState(products);
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'Fashion',
+    price: '',
+    commission: 15,
+    description: '',
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop' // Default placeholder
+  });
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const filteredProducts = products.filter(p => 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddProduct = (e) => {
+    e.preventDefault();
+    const newProduct = {
+      id: localProducts.length + 1,
+      ...formData,
+      price: parseInt(formData.price) || 0,
+      rating: 0,
+      reviews: 0,
+      slug: formData.name.toLowerCase().replace(/ /g, '-'),
+      status: 'Active',
+      sales: 0,
+      revenue: '₹0',
+      influencer: { name: "System", handle: "system", image: "https://picsum.photos/seed/system/100/100" }
+    };
+    
+    setLocalProducts([newProduct, ...localProducts]);
+    setSuccessMessage('Product published successfully!');
+    setShowAddForm(false);
+    setFormData({
+      name: '',
+      category: 'Fashion',
+      price: '',
+      commission: 15,
+      description: '',
+      image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop'
+    });
+    
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const filteredProducts = localProducts.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <DashboardLayout type="seller">
       <div className="max-w-6xl mx-auto">
+        {successMessage && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed top-10 right-10 z-50 bg-accent text-white px-8 py-4 rounded-2xl font-bold shadow-2xl shadow-accent/20"
+          >
+            {successMessage}
+          </motion.div>
+        )}
         {!showAddForm ? (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
@@ -89,12 +144,12 @@ export default function SellerProducts() {
                             </div>
                           </td>
                           <td className="px-6 py-6 font-bold text-neutral-gray text-sm">
-                            240 Units
+                            {product.sales ? 'Limited' : 'New Stock'}
                           </td>
                           <td className="px-6 py-6">
                             <div className="flex items-center gap-1.5 text-accent font-black">
                               <Percent size={14} />
-                              15%
+                              {product.commission || 15}%
                             </div>
                           </td>
                           <td className="px-6 py-6 text-right font-black text-neutral-black">₹{product.price.toLocaleString('en-IN')}</td>
@@ -122,25 +177,49 @@ export default function SellerProducts() {
             <div className="bg-white p-8 sm:p-12 rounded-[48px] border border-gray-100 shadow-xl relative overflow-hidden">
                <h2 className="text-3xl font-black text-neutral-black mb-8 font-display">List New Product</h2>
                
-               <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setShowAddForm(false); }}>
+               <form className="space-y-6" onSubmit={handleAddProduct}>
                  <div className="space-y-2">
                    <label className="text-xs font-black uppercase tracking-widest text-neutral-gray ml-2">Product Name</label>
-                   <input type="text" placeholder="e.g. Pro Wireless Gaming Mouse" className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all" />
+                   <input 
+                    type="text" 
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Pro Wireless Gaming Mouse" 
+                    className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all" 
+                   />
                  </div>
 
                  <div className="grid grid-cols-2 gap-4">
                    <div className="space-y-2">
                      <label className="text-xs font-black uppercase tracking-widest text-neutral-gray ml-2">Category</label>
-                     <select className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all appearance-none">
-                       <option>Electronics</option>
+                     <select 
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all appearance-none"
+                     >
                        <option>Fashion</option>
-                       <option>Home & Living</option>
+                       <option>Electronics</option>
                        <option>Beauty</option>
+                       <option>Home Decor</option>
+                       <option>Fitness</option>
+                       <option>Grocery (Food)</option>
+                       <option>Jewellery</option>
                      </select>
                    </div>
                    <div className="space-y-2">
                      <label className="text-xs font-black uppercase tracking-widest text-neutral-gray ml-2">Sale Price (₹)</label>
-                     <input type="number" placeholder="2999" className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all" />
+                     <input 
+                      type="number" 
+                      name="price"
+                      required
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      placeholder="2999" 
+                      className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all" 
+                     />
                    </div>
                  </div>
 
@@ -150,9 +229,17 @@ export default function SellerProducts() {
                         <Percent size={18} />
                         Affiliate Commission
                      </h3>
-                     <span className="text-2xl font-black text-primary">15%</span>
+                     <span className="text-2xl font-black text-primary">{formData.commission}%</span>
                    </div>
-                   <input type="range" min="1" max="50" defaultValue="15" className="w-full accent-primary h-2 rounded-full cursor-pointer" />
+                   <input 
+                    type="range" 
+                    name="commission"
+                    min="1" 
+                    max="50" 
+                    value={formData.commission}
+                    onChange={handleInputChange}
+                    className="w-full accent-primary h-2 rounded-full cursor-pointer" 
+                   />
                    <p className="text-[10px] font-bold text-neutral-gray leading-relaxed">
                      Set an attractive commission to motivate top influencers to promote your product. Our platform fee is a flat 5% on top of this.
                    </p>
@@ -160,12 +247,20 @@ export default function SellerProducts() {
 
                  <div className="space-y-2">
                    <label className="text-xs font-black uppercase tracking-widest text-neutral-gray ml-2">Product Description</label>
-                   <textarea rows="4" placeholder="Tell influencers and customers why this product is special..." className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all resize-none"></textarea>
+                   <textarea 
+                    rows="4" 
+                    name="description"
+                    required
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    placeholder="Tell influencers and customers why this product is special..." 
+                    className="w-full p-5 rounded-2xl bg-gray-50 border border-gray-100 outline-none focus:ring-2 ring-primary/20 font-bold transition-all resize-none"
+                   ></textarea>
                  </div>
 
                  <div className="grid grid-cols-2 gap-4 pt-4">
                     <button type="button" onClick={() => setShowAddForm(false)} className="py-5 rounded-2xl bg-gray-100 text-neutral-black font-bold hover:bg-gray-200 transition-all">
-                      Save Draft
+                      Cancel
                     </button>
                     <button type="submit" className="py-5 rounded-2xl bg-primary text-white font-black text-lg shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all">
                       Publish Product

@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "App user with role-based access",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "phoneNumber": { "type": "string", "description": "User's phone number" },
+        "role": { "type": "string", "enum": ["user", "seller", "influencer"], "description": "The user's role in the platform" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of account creation" },
+        "displayName": { "type": "string", "description": "User's display name" }
+      },
+      "required": ["uid", "phoneNumber", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of users and their profile information"
+    }
+  }
+}

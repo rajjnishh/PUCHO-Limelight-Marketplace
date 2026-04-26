@@ -5,23 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Star, ShoppingCart, Link as LinkIcon, Heart } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useWishlist } from '@/context/WishlistContext';
 
 const ProductCard = ({ product, showAffiliateAction = false }) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
-
-  useEffect(() => {
-    const checkWishlist = () => {
-      const list = JSON.parse(localStorage.getItem('wishlist') || '[]');
-      setIsWishlisted(list.includes(product.slug));
-    };
-    checkWishlist();
-    window.addEventListener('wishlistChange', checkWishlist);
-    window.addEventListener('storage', checkWishlist);
-    return () => {
-      window.removeEventListener('wishlistChange', checkWishlist);
-      window.removeEventListener('storage', checkWishlist);
-    };
-  }, [product.slug]);
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(product.id);
 
   const handleCopyLink = (e) => {
     e.preventDefault();
@@ -56,13 +44,11 @@ const ProductCard = ({ product, showAffiliateAction = false }) => {
         className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(255,47,109,0.06)] border border-gray-100/50 flex flex-col h-full cursor-pointer transition-all relative"
       >
         <div className="flex flex-col h-full">
-          {/* Image Container */}
-          <div className="relative aspect-[4/3] overflow-hidden">
-            <Image 
+          <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
+            <img 
               src={product.image} 
               alt={product.name}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
             />
             {/* Category Tag */}
@@ -76,7 +62,11 @@ const ProductCard = ({ product, showAffiliateAction = false }) => {
             <button 
               type="button"
               suppressHydrationWarning
-              onClick={handleWishlistClick}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(product);
+              }}
               className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all active:scale-95 z-10 ${
                 isWishlisted 
                   ? 'bg-white text-primary shadow-md' 

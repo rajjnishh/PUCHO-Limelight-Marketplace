@@ -12,13 +12,11 @@ const InfluencerCard = ({ influencer }) => {
       whileHover={{ scale: 1.02 }}
       className="bg-white rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(255,47,109,0.06)] border border-gray-100/50 flex flex-col h-full"
     >
-      {/* Banner */}
-      <div className="relative h-32 w-full overflow-hidden shrink-0">
-        <Image 
+      <div className="relative h-32 w-full overflow-hidden shrink-0 bg-gray-100">
+        <img 
           src={influencer.banner} 
           alt={`${influencer.name} banner`}
-          fill
-          className="object-cover opacity-80"
+          className="w-full h-full object-cover opacity-80"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -28,11 +26,10 @@ const InfluencerCard = ({ influencer }) => {
       <div className="px-6 pb-6 relative flex flex-col flex-grow">
         <div className="relative -mt-12 mb-4 flex justify-between items-end">
           <div className="w-24 h-24 rounded-3xl border-4 border-white overflow-hidden shadow-xl bg-gray-100 relative">
-            <Image 
+            <img 
               src={influencer.image} 
               alt={influencer.name}
-              fill
-              className="object-cover"
+              className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
           </div>

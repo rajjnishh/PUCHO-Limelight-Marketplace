@@ -4,14 +4,16 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShoppingCart, Menu, X, User } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/context/AuthContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { wishlist } = useWishlist();
   const pathname = usePathname();
   const isLoggedIn = !!user;
 
@@ -50,10 +52,12 @@ const Navbar = () => {
         </Link>
 
         {/* Center Menu - Pill Shape */}
-        <div className="hidden lg:flex items-center bg-white border border-[#EAEAEA] rounded-full py-1.5 px-1.5 shadow-sm">
+        <div className="hidden min-[1100px]:flex items-center bg-white border border-[#EAEAEA] rounded-full py-1.5 px-1.5 shadow-sm">
           {[
             { name: 'Shop', href: '/products' },
             { name: 'Influencers', href: '/influencers' },
+            { name: 'Track Order', href: '/track' },
+            { name: 'Wishlist', href: '/account/wishlist' },
             { name: 'How it Works', href: '/how-it-works' },
             { name: 'Sell with Us', href: '/register' }
           ].map((item) => {
@@ -83,22 +87,37 @@ const Navbar = () => {
 
         {/* Right CTA */}
         <div className="flex items-center gap-4">
-          <Link 
-            href={isLoggedIn ? "/profile" : "/login"} 
-            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/20 active:scale-95 bg-[#FF2E63] text-white text-sm"
-          >
-            <User size={18} />
-            Influencer / Seller Login
+          <Link href="/account/wishlist" className="relative p-2 text-neutral-gray hover:text-primary transition-colors hidden sm:block">
+            <Heart size={20} fill={wishlist.length > 0 ? "currentColor" : "none"} className={wishlist.length > 0 ? "text-primary" : ""} />
+            {wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white">
+                {wishlist.length}
+              </span>
+            )}
           </Link>
-          
-          {isLoggedIn && (
-            <button 
-              type="button"
-              onClick={handleLogout}
-              className="hidden md:block text-xs font-bold text-neutral-gray hover:text-primary transition-colors duration-200 ml-2"
+          {!isLoggedIn ? (
+            <Link 
+              href="/login" 
+              className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-300 hover:shadow-xl hover:shadow-[#FF2E63]/20 active:scale-95 bg-[#FF2E63] text-white text-sm whitespace-nowrap"
             >
-              Logout
-            </button>
+              Sign Up / Login
+            </Link>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link href="/profile" className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#EAEAEA] bg-white transition-all hover:bg-gray-50">
+                <div className="w-6 h-6 rounded-full bg-[#FF2E63]/10 flex items-center justify-center text-[#FF2E63]">
+                  <User size={14} />
+                </div>
+                <span className="text-xs font-bold text-[#111] hidden sm:inline-block">Account</span>
+              </Link>
+              <button 
+                type="button"
+                onClick={handleLogout}
+                className="text-xs font-bold text-gray-400 hover:text-[#FF2E63] transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           )}
           
           {/* Mobile Menu Toggle */}

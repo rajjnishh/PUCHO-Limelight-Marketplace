@@ -1,21 +1,53 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import ProductCard from '../../components/ProductCard';
 import CategoryPills from '../../components/CategoryPills';
 import { products } from '../../data/products';
-import { Search, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Search, SlidersHorizontal, ChevronDown, Tag } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('popular');
+  const searchParams = useSearchParams();
+  const tagFilter = searchParams.get('tag');
   
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [searchTerm, setSearchTerm] = useState(tagFilter ? `#${tagFilter}` : '');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('popular');
+
+  useEffect(() => {
+    if (tagFilter) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSearchTerm(`#${tagFilter}`);
+    }
+  }, [tagFilter]);
+  
+  const filteredProducts = products
+    .filter(p => {
+      const searchLower = searchTerm.toLowerCase();
+      const actualSearch = searchLower.startsWith('#') ? searchLower.slice(1) : searchLower;
+      const isTagSearch = searchLower.startsWith('#');
+
+      const matchesSearch = isTagSearch 
+        ? p.tags?.some(t => t.toLowerCase().includes(actualSearch)) || p.category.toLowerCase().includes(actualSearch)
+        : p.name.toLowerCase().includes(searchLower) ||
+          p.category.toLowerCase().includes(searchLower) ||
+          p.influencer.name.toLowerCase().includes(searchLower) ||
+          p.description?.toLowerCase().includes(searchLower) ||
+          p.tags?.some(t => t.toLowerCase().includes(searchLower));
+      
+      const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price_low') return a.price - b.price;
+      if (sortBy === 'price_high') return b.price - a.price;
+      if (sortBy === 'newest') return b.id - a.id;
+      return b.rating - a.rating; // default popular
+    });
 
   return (
     <main className="min-h-screen bg-neutral-light">
@@ -55,7 +87,7 @@ export default function ProductsPage() {
                   className="w-full appearance-none px-10 py-5 rounded-[20px] bg-white border border-gray-100 font-bold outline-none cursor-pointer pr-12 shadow-sm text-neutral-black"
                 >
                   <option value="popular">Most Popular</option>
-                  <option value="newest">New Arrivals</option>
+                  <option value="newest">Newest Arrivals</option>
                   <option value="price_low">Price: Low to High</option>
                   <option value="price_high">Price: High to Low</option>
                 </select>
@@ -67,7 +99,7 @@ export default function ProductsPage() {
       </section>
 
       <section className="py-8 bg-white border-b border-gray-100 sticky top-[72px] z-30">
-        <CategoryPills />
+        <CategoryPills active={selectedCategory} onSelect={setSelectedCategory} />
       </section>
 
       <section className="py-16 px-4 max-w-7xl mx-auto">
@@ -89,7 +121,7 @@ export default function ProductsPage() {
             <h3 className="text-2xl font-bold mb-2 text-neutral-black font-display">No products found</h3>
             <p className="text-neutral-gray">Try adjusting your search or filters to find what you&apos;re looking for.</p>
             <button 
-              onClick={() => {setSearchTerm(''); setSortBy('popular');}}
+              onClick={() => {setSearchTerm(''); setSelectedCategory('All'); setSortBy('popular');}}
               className="mt-8 font-bold text-primary hover:underline"
             >
               Clear all filters

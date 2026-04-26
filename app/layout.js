@@ -1,6 +1,7 @@
 import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
+import { WishlistProvider } from '@/context/WishlistContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,7 +26,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <AuthProvider>
-          {children}
+          <WishlistProvider>
+            {children}
+          </WishlistProvider>
         </AuthProvider>
       </body>
     </html>
