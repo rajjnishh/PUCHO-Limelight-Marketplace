@@ -49,11 +49,14 @@ const Navbar = () => {
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-0 group">
-          <div className="relative h-8 w-24">
-            <img 
+          <div className="relative h-12 w-48">
+            <Image 
               src="/logo.jpeg" 
               alt="pucho limelight" 
-              className="h-full w-full object-contain object-left"
+              fill
+              className="object-contain object-left"
+              referrerPolicy="no-referrer"
+              priority
             />
           </div>
         </Link>

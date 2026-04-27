@@ -30,7 +30,15 @@ export default function LoginPage() {
 
     try {
       await signInWithEmail(email, password);
-      router.push('/');
+      // We don't have accountType here easily without state, 
+      // but usually the user would have set it in the UI before clicking
+      if (accountType === 'influencer') {
+        router.push('/influencer/dashboard');
+      } else if (accountType === 'user') {
+        router.push('/user/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (err) {
       setError(err.message || 'Failed to login with email.');
     } finally {
@@ -73,7 +81,13 @@ export default function LoginPage() {
         displayName: user.displayName || 'New User',
       });
 
-      router.push('/');
+      if (accountType === 'influencer') {
+        router.push('/influencer/dashboard');
+      } else if (accountType === 'user') {
+        router.push('/user/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (err) {
       setError(err.message || 'Invalid OTP. Please try again.');
     } finally {
@@ -100,18 +114,19 @@ export default function LoginPage() {
         </div>
         
         <div className="relative z-10 flex items-center gap-6">
-           <div className="flex -space-x-4">
-             {[1,2,3,4].map(i => (
-               <div key={i} className="relative w-12 h-12 rounded-full border-4 border-[#D4145A] bg-gray-200 overflow-hidden shadow-lg">
-                 <img 
-                   src={`https://picsum.photos/seed/user${i}/100/100`} 
-                   alt="user" 
-                   className="w-full h-full object-cover" 
-                   referrerPolicy="no-referrer"
-                 />
-               </div>
-             ))}
-           </div>
+            <div className="flex -space-x-4">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="relative w-12 h-12 rounded-full border-4 border-[#D4145A] bg-gray-200 overflow-hidden shadow-lg">
+                  <Image 
+                    src={`https://picsum.photos/seed/user${i}/100/100`} 
+                    alt="user" 
+                    fill
+                    className="object-cover" 
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+              ))}
+            </div>
            <p className="text-white/70 text-sm font-bold uppercase tracking-widest">Join 100K+ shopaholics</p>
         </div>
       </div>
@@ -327,7 +342,13 @@ export default function LoginPage() {
                 setLoading(true);
                 try {
                   await signInWithGoogle(accountType);
-                  router.push('/');
+                  if (accountType === 'influencer') {
+                    router.push('/influencer/dashboard');
+                  } else if (accountType === 'user') {
+                    router.push('/user/dashboard');
+                  } else {
+                    router.push('/');
+                  }
                 } catch (err) {
                   setError(err.message);
                 } finally {
@@ -337,7 +358,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-white border border-gray-100 font-bold hover:bg-gray-50 transition-all shadow-sm text-neutral-black"
             >
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+              <Image src="https://www.google.com/favicon.ico" alt="Google" width={20} height={20} className="w-5 h-5" />
               Continue with Google
             </button>
           </div>

@@ -122,10 +122,13 @@ const HeroSection = () => {
 
               {/* Main Image Container */}
               <div className="w-full h-full rounded-[32px] overflow-hidden relative shadow-2xl bg-gray-50 border-[12px] border-white/40 backdrop-blur-sm">
-                <img 
+                <Image 
                    src="/hero-image.png" 
-                   alt="Young woman creator recording a video with camera on tripod"
-                   className="w-full h-full object-cover"
+                   alt="Young woman creator recording a video"
+                   fill
+                   className="object-cover"
+                   referrerPolicy="no-referrer"
+                   priority
                 />
               </div>
 
@@ -177,7 +180,13 @@ const HeroSection = () => {
                     "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=150&h=150&auto=format&fit=crop"
                   ].map((url, i) => (
                     <div key={i} className="aspect-square rounded-[10px] overflow-hidden relative bg-gray-50">
-                      <img src={url} alt="Product" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <Image 
+                        src={url} 
+                        alt="Product" 
+                        fill 
+                        className="object-cover" 
+                        referrerPolicy="no-referrer" 
+                      />
                     </div>
                   ))}
                 </div>

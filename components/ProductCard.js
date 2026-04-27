@@ -45,10 +45,11 @@ const ProductCard = ({ product, showAffiliateAction = false }) => {
       >
         <div className="flex flex-col h-full">
           <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-            <img 
+            <Image 
               src={product.image} 
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
               referrerPolicy="no-referrer"
             />
             {/* Category Tag */}

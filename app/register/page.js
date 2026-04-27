@@ -337,7 +337,7 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-white border border-gray-100 font-bold hover:bg-gray-50 transition-all shadow-sm text-neutral-black"
             >
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+              <Image src="https://www.google.com/favicon.ico" alt="Google" width={20} height={20} className="w-5 h-5" />
               Continue with Google
             </button>
           </div>

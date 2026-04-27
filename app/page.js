@@ -68,7 +68,13 @@ export default function Home() {
               <div className="flex -space-x-3 ml-1">
                 {avatars.slice(0, 8).map((url, i) => (
                   <div key={i} className="w-[32px] h-[32px] rounded-full border-2 border-white overflow-hidden shadow-sm transition-transform hover:scale-110 relative bg-gray-100">
-                    <img src={url} alt="Creator" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    <Image 
+                      src={url} 
+                      alt="Creator" 
+                      fill 
+                      className="object-cover" 
+                      referrerPolicy="no-referrer" 
+                    />
                   </div>
                 ))}
               </div>
